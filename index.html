@@ -10,13 +10,28 @@
 <body>
     <nav class="navbar">
         <div class="navbar-menu">
-            <button class="nav-btn active" data-tab="identidade">Identidade</button>
-            <button class="nav-btn" data-tab="atributos">Básicas</button>
-            <button class="nav-btn" data-tab="equipamentos">Equipamentos</button>
+            <button class="nav-btn active" data-tab="identidade">
+                <span class="nav-icon">👤</span>
+                <span class="nav-text">Identidade</span>
+            </button>
+            <button class="nav-btn" data-tab="atributos">
+                <span class="nav-icon">⚡</span>
+                <span class="nav-text">Básicas</span>
+            </button>
+            <button class="nav-btn" data-tab="equipamentos">
+                <span class="nav-icon">🎒</span>
+                <span class="nav-text">Equipamentos</span>
+            </button>
         </div>
         <div class="navbar-controls">
-            <button class="btn btn-sm btn-secondary" id="salvar-ficha">💾 Salvar</button>
-            <button class="btn btn-sm btn-accent" id="carregar-ficha">📁 Carregar</button>
+            <button class="btn btn-sm btn-secondary" id="salvar-ficha">
+                <span class="btn-icon">💾</span>
+                <span class="btn-text">Salvar</span>
+            </button>
+            <button class="btn btn-sm btn-accent" id="carregar-ficha">
+                <span class="btn-icon">📁</span>
+                <span class="btn-text">Carregar</span>
+            </button>
             <input type="file" id="file-input" accept=".json" style="display: none;">
         </div>
     </nav>

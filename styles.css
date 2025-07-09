@@ -185,6 +185,25 @@ body {
     position: relative;
     overflow: hidden;
     font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-btn .nav-icon {
+    display: none;
+}
+
+.nav-btn .nav-text {
+    display: inline-block;
+}
+
+.btn .btn-icon {
+    display: none;
+}
+
+.btn .btn-text {
+    display: inline-block;
 }
 
 .nav-btn:hover {
@@ -1478,6 +1497,43 @@ input[type="checkbox"]:checked + .stress-box.special {
         letter-spacing: 0.5px;
     }
     
+    /* Navegação mobile - apenas ícones */
+    .navbar {
+        height: 60px;
+        padding: 0 10px;
+    }
+    
+    .nav-btn .nav-text,
+    .btn .btn-text {
+        display: none;
+    }
+    
+    .nav-btn .nav-icon,
+    .btn .btn-icon {
+        display: inline-block;
+        font-size: 1.2rem;
+    }
+    
+    .nav-btn {
+        min-width: 45px;
+        padding: 8px 12px;
+        font-size: 1.2rem;
+    }
+    
+    .btn-sm {
+        padding: 8px 12px;
+        font-size: 1.2rem;
+        min-width: 45px;
+    }
+    
+    .navbar-menu {
+        gap: 8px;
+    }
+    
+    .navbar-controls {
+        gap: 8px;
+    }
+    
     
     .tab-content,
     .container,
@@ -1585,30 +1641,8 @@ input[type="checkbox"]:checked + .stress-box.special {
         grid-template-columns: 1fr;
     }
     
-    .navbar {
-        height: 50px;
-        padding: 0 10px;
-    }
-    
-    .navbar-title {
-        font-size: 1.4rem;
-    }
-    
-    .navbar-subtitle {
-        display: none;
-    }
-    
-    .navbar-controls {
-        gap: 5px;
-    }
-    
-    .btn-sm {
-        padding: 4px 8px;
-        font-size: 0.75rem;
-    }
-    
     body {
-        padding-top: 60px;
+        padding-top: 70px;
     }
     
     
