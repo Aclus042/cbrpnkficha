@@ -1,4 +1,4 @@
-/* Reset e Base */
+
 * {
     margin: 0;
     padding: 0;
@@ -10,9 +10,9 @@ html {
     overflow-x: hidden;
 }
 
-/* Variáveis de cores cyberpunk neon SÓBRIAS */
+
 :root {
-    /* Cores neon primárias sutis e elegantes */
+    
     --neon-cyan: #4dd0e1;
     --neon-cyan-glow: rgba(77, 208, 225, 0.3);
     --neon-cyan-bright: #80e5ff;
@@ -48,7 +48,7 @@ html {
     --neon-red-bright: #ef5350;
     --neon-red-shadow: rgba(229, 115, 115, 0.15);
     
-    /* Sistema de dano neon intenso */
+    
     --damage-light: var(--neon-yellow);
     --damage-light-glow: var(--neon-yellow-glow);
     --damage-moderate: var(--neon-orange);
@@ -56,7 +56,7 @@ html {
     --damage-severe: var(--neon-red);
     --damage-severe-glow: var(--neon-red-glow);
     
-    /* Sistema de estresse neon intenso */
+    
     --stress-normal: var(--neon-cyan);
     --stress-normal-glow: var(--neon-cyan-glow);
     --stress-special: var(--neon-pink);
@@ -64,7 +64,7 @@ html {
     --stress-overload: var(--neon-purple);
     --stress-overload-glow: var(--neon-purple-glow);
     
-    /* Sistema de perícias neon intenso */
+    
     --skill-normal: var(--neon-green);
     --skill-normal-glow: var(--neon-green-glow);
     --skill-bugado: var(--neon-pink);
@@ -72,7 +72,7 @@ html {
     --skill-especializado: var(--neon-yellow);
     --skill-especializado-glow: var(--neon-yellow-glow);
     
-    /* Fundos cyberpunk sutis */
+    
     --bg-primary: #0f1419;
     --bg-secondary: #1a1f29;
     --bg-tertiary: #242936;
@@ -81,7 +81,7 @@ html {
     --bg-card: rgba(36, 41, 54, 0.75);
     --bg-card-glow: rgba(77, 208, 225, 0.05);
     
-    /* Textos neon sutis */
+    
     --text-primary: #e8eaed;
     --text-secondary: var(--neon-cyan);
     --text-accent: var(--neon-green);
@@ -91,92 +91,29 @@ html {
     --text-glow: 0 0 8px currentColor;
     --text-glow-strong: 0 0 12px currentColor, 0 0 16px currentColor;
     
-    /* Bordas e efeitos suaves */
+    
     --border-neon: 1px solid var(--neon-cyan);
     --border-glow: 0 0 12px var(--neon-cyan-glow);
     --border-glow-strong: 0 0 20px var(--neon-cyan-glow), 0 0 30px var(--neon-cyan-glow);
     --box-shadow-neon: 0 0 20px var(--neon-cyan-glow);
     --box-shadow-neon-strong: 0 0 30px var(--neon-cyan-glow), 0 0 40px var(--neon-cyan-shadow);
     
-    /* Gradientes neon */
-    --gradient-cyan: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-cyan-bright) 100%);
-    --gradient-green: linear-gradient(135deg, var(--neon-green) 0%, var(--neon-green-bright) 100%);
-    --gradient-pink: linear-gradient(135deg, var(--neon-pink) 0%, var(--neon-pink-bright) 100%);
-    --gradient-purple: linear-gradient(135deg, var(--neon-purple) 0%, var(--neon-purple-bright) 100%);
-    --gradient-yellow: linear-gradient(135deg, var(--neon-yellow) 0%, var(--neon-yellow-bright) 100%);
-    --gradient-orange: linear-gradient(135deg, var(--neon-orange) 0%, var(--neon-orange-bright) 100%);
-    --gradient-red: linear-gradient(135deg, var(--neon-red) 0%, var(--neon-red-bright) 100%);
     
-    /* Gradientes de fundo sutis */
-    --bg-gradient-main: radial-gradient(circle at 20% 80%, var(--neon-cyan-shadow) 0%, transparent 70%),
-                        radial-gradient(circle at 80% 20%, var(--neon-pink-shadow) 0%, transparent 70%),
-                        linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-    
-    /* Filtros e efeitos */
-    --blur-backdrop: blur(20px);
-    --blur-light: blur(10px);
-    --brightness-glow: brightness(1.3);
-    --contrast-high: contrast(1.2);
+    --blur-backdrop: none;
+    --blur-light: none;
 }
 
 body {
     font-family: 'Roboto', 'Exo 2', 'Orbitron', sans-serif;
-    background: var(--bg-gradient-main);
+    background: var(--bg-primary);
     color: var(--text-primary);
     min-height: 100vh;
     line-height: 1.6;
     padding-top: 80px;
     position: relative;
     overflow-x: hidden;
-    text-shadow: 0 0 3px rgba(232, 234, 237, 0.2);
     margin: 0;
     scroll-behavior: smooth;
-}
-
-/* Efeito de grid cyberpunk sutil no fundo */
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: 
-        linear-gradient(var(--neon-cyan-shadow) 1px, transparent 1px),
-        linear-gradient(90deg, var(--neon-cyan-shadow) 1px, transparent 1px);
-    background-size: 
-        80px 80px,
-        80px 80px;
-    background-position:
-        0 0,
-        0 0;
-    pointer-events: none;
-    z-index: -2;
-    opacity: 0.3;
-}
-
-/* Efeito de scanlines cyberpunk sutil */
-body::after {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        transparent 0%,
-        rgba(77, 208, 225, 0.015) 50%,
-        transparent 100%
-    );
-    background-size: 100% 6px;
-    pointer-events: none;
-    z-index: -1;
-    animation: scanlines 0.15s linear infinite;
-}
-
-@keyframes scanlines {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(6px); }
 }
 
 .container {
@@ -187,7 +124,7 @@ body::after {
     z-index: 1;
 }
 
-/* Navbar Cyberpunk ULTRA INTENSO */
+
 .navbar {
     position: fixed;
     top: 0;
@@ -195,80 +132,26 @@ body::after {
     right: 0;
     width: 100%;
     height: 70px;
-    background: linear-gradient(90deg, 
-        rgba(0, 5, 20, 0.98) 0%, 
-        rgba(0, 20, 40, 0.95) 25%,
-        rgba(0, 40, 80, 0.95) 50%, 
-        rgba(0, 20, 40, 0.95) 75%,
-        rgba(0, 5, 20, 0.98) 100%);
-    backdrop-filter: var(--blur-backdrop);
+    background: var(--bg-secondary);
+    
     border-bottom: 3px solid var(--neon-cyan);
-    box-shadow: 
-        var(--border-glow-strong),
-        0 4px 20px rgba(0, 0, 0, 0.6),
-        inset 0 1px 0 rgba(77, 208, 225, 0.2),
-        inset 0 -1px 0 rgba(77, 208, 225, 0.1);
+    box-shadow: 0 0 15px var(--neon-cyan-glow);
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 30px;
     z-index: 9999;
-    animation: navbarMegaPulse 3s ease-in-out infinite;
     position: relative;
     overflow: hidden;
-    will-change: transform;
 }
 
-/* Garantir que a navbar sempre fique no topo */
+
 .navbar {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
     right: 0 !important;
     z-index: 9999 !important;
-}
-
-/* Efeito de luz sutil na navbar */
-.navbar::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(77, 208, 225, 0.1), 
-        rgba(77, 208, 225, 0.2), 
-        rgba(77, 208, 225, 0.1), 
-        transparent);
-    animation: lightSweep 6s ease-in-out infinite;
-}
-
-@keyframes navbarMegaPulse {
-    0%, 100% { 
-        box-shadow: 
-            0 0 15px var(--neon-cyan-glow),
-            0 0 25px var(--neon-cyan-shadow),
-            0 4px 20px rgba(0, 0, 0, 0.6),
-            inset 0 1px 0 rgba(77, 208, 225, 0.2),
-            inset 0 -1px 0 rgba(77, 208, 225, 0.1);
-        border-color: var(--neon-cyan);
-    }
-    50% { 
-        box-shadow: 
-            0 0 20px var(--neon-green-glow),
-            0 0 30px var(--neon-green-shadow),
-            0 4px 20px rgba(0, 0, 0, 0.6),
-            inset 0 1px 0 rgba(102, 187, 106, 0.2),
-            inset 0 -1px 0 rgba(102, 187, 106, 0.1);
-        border-color: var(--neon-green);
-    }
-}
-
-@keyframes lightSweep {
-    0% { left: -100%; }
-    100% { left: 100%; }
 }
 
 .navbar-brand {
@@ -278,7 +161,7 @@ body::after {
     z-index: 2;
 }
 
-/* Novo estilo para o menu de navegação na navbar */
+
 .navbar-menu {
     display: flex;
     align-items: center;
@@ -293,7 +176,7 @@ body::after {
     color: var(--text-secondary);
     cursor: pointer;
     border-radius: 8px;
-    transition: all 0.3s ease;
+    transition: all 0.15s ease;
     white-space: nowrap;
     font-weight: 700;
     font-family: 'Orbitron', monospace;
@@ -304,46 +187,19 @@ body::after {
     font-size: 0.85rem;
 }
 
-/* Efeito de brilho ao passar o mouse */
-.nav-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(77, 208, 225, 0.2), 
-        rgba(77, 208, 225, 0.3), 
-        rgba(77, 208, 225, 0.2), 
-        transparent);
-    transition: left 0.6s ease;
-    z-index: -1;
-}
-
-.nav-btn:hover::before {
-    left: 100%;
-}
-
 .nav-btn:hover {
     border-color: var(--neon-cyan);
     color: var(--neon-cyan-bright);
     text-shadow: var(--text-glow);
-    box-shadow: 
-        0 0 15px var(--neon-cyan-glow),
-        inset 0 0 10px rgba(77, 208, 225, 0.08);
+    box-shadow: 0 0 10px var(--neon-cyan-glow);
 }
 
 .nav-btn.active {
-    background: var(--gradient-cyan);
+    background: var(--neon-cyan);
     color: var(--bg-primary);
     font-weight: 900;
     border-color: var(--neon-green);
-    box-shadow: 
-        0 0 20px var(--neon-green-glow),
-        0 0 30px var(--neon-green-shadow),
-        inset 0 0 15px rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 15px var(--neon-green-glow);
     text-shadow: none;
 }
 
@@ -353,67 +209,21 @@ body::after {
     z-index: 2;
 }
 
-/* Botões Neon ULTRA INTENSOS */
+
 .btn {
     padding: 12px 24px;
     border: 3px solid;
     border-radius: 15px;
     cursor: pointer;
     font-weight: 700;
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: all 0.15s ease;
     text-transform: uppercase;
     letter-spacing: 3px;
     font-size: 0.9rem;
     font-family: 'Orbitron', monospace;
     background: transparent;
     position: relative;
-    overflow: hidden;
-    filter: var(--brightness-glow);
     text-shadow: 0 0 10px currentColor;
-}
-
-/* Efeito de luz passando pelos botões */
-.btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.4), 
-        rgba(255, 255, 255, 0.6), 
-        rgba(255, 255, 255, 0.4), 
-        transparent);
-    transition: left 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    z-index: 1;
-}
-
-/* Efeito de partículas/energia nos botões */
-.btn::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: radial-gradient(circle, currentColor 0%, transparent 70%);
-    opacity: 0;
-    transform: translate(-50%, -50%);
-    transition: all 0.4s ease;
-    z-index: 0;
-}
-
-.btn:hover::before {
-    left: 100%;
-}
-
-.btn:hover::after {
-    width: 200px;
-    height: 200px;
-    opacity: 0.1;
 }
 
 .btn:active {
@@ -423,20 +233,15 @@ body::after {
 .btn-primary {
     border-color: var(--neon-green);
     color: var(--neon-green);
-    text-shadow: var(--text-glow-strong);
-    box-shadow: 
-        0 0 25px var(--neon-green-glow),
-        inset 0 0 25px rgba(0, 255, 65, 0.1);
+    text-shadow: var(--text-glow);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
 }
 
 .btn-primary:hover {
-    background: var(--gradient-green);
+    background: var(--neon-green);
     color: var(--bg-primary);
-    box-shadow: 
-        0 0 40px var(--neon-green-glow),
-        0 0 60px var(--neon-green-shadow),
-        inset 0 0 30px rgba(255, 255, 255, 0.2);
-    transform: translateY(-5px);
+    box-shadow: 0 0 20px var(--neon-green-glow);
+    transform: translateY(-2px);
     border-color: var(--neon-green-bright);
     text-shadow: none;
 }
@@ -444,19 +249,14 @@ body::after {
 .btn-secondary {
     border-color: var(--neon-cyan);
     color: var(--neon-cyan);
-    text-shadow: var(--text-glow-strong);
-    box-shadow: 
-        0 0 25px var(--neon-cyan-glow),
-        inset 0 0 25px rgba(0, 255, 255, 0.1);
+    text-shadow: var(--text-glow);
+    box-shadow: 0 0 15px var(--neon-cyan-glow);
 }
 
 .btn-secondary:hover {
-    background: var(--gradient-cyan);
+    background: var(--neon-cyan);
     color: var(--bg-primary);
-    box-shadow: 
-        0 0 20px var(--neon-cyan-glow),
-        0 0 30px var(--neon-cyan-shadow),
-        inset 0 0 15px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 15px var(--neon-cyan-glow);
     transform: translateY(-2px);
     border-color: var(--neon-cyan-bright);
     text-shadow: none;
@@ -465,19 +265,14 @@ body::after {
 .btn-accent {
     border-color: var(--neon-pink);
     color: var(--neon-pink);
-    text-shadow: var(--text-glow-strong);
-    box-shadow: 
-        0 0 12px var(--neon-pink-glow),
-        inset 0 0 12px rgba(240, 98, 146, 0.08);
+    text-shadow: var(--text-glow);
+    box-shadow: 0 0 10px var(--neon-pink-glow);
 }
 
 .btn-accent:hover {
-    background: var(--gradient-pink);
+    background: var(--neon-pink);
     color: var(--bg-primary);
-    box-shadow: 
-        0 0 20px var(--neon-pink-glow),
-        0 0 30px var(--neon-pink-shadow),
-        inset 0 0 15px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 15px var(--neon-pink-glow);
     transform: translateY(-2px);
     border-color: var(--neon-pink-bright);
     text-shadow: none;
@@ -490,203 +285,81 @@ body::after {
     border-width: 2px;
 }
 
-/* Tabs Cyberpunk sutis */
+
 .tabs {
     display: flex;
-    background: linear-gradient(90deg, 
-        rgba(26, 31, 41, 0.8) 0%, 
-        rgba(36, 41, 54, 0.6) 50%,
-        rgba(26, 31, 41, 0.8) 100%);
+    background: var(--bg-secondary);
     border: 1px solid var(--neon-cyan);
     border-radius: 15px;
     padding: 6px;
     margin-bottom: 40px;
     margin-top: 20px;
-    overflow: visible; /* Remove scroll */
+    overflow: visible;
     gap: 6px;
     box-shadow: 
         0 0 40px var(--neon-cyan-glow),
-        0 0 60px var(--neon-cyan-shadow),
-        inset 0 0 30px rgba(0, 255, 255, 0.15);
+        0 0 60px var(--neon-cyan-shadow);
     position: relative;
-    backdrop-filter: var(--blur-backdrop);
-    flex-wrap: wrap; /* Permite quebra de linha se necessário */
-    justify-content: center; /* Centraliza os botões */
-}
-
-/* Borda sutil colorida */
-.tabs::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(45deg, 
-        var(--neon-cyan), 
-        var(--neon-green),
-        var(--neon-cyan));
-    border-radius: 17px;
-    z-index: -1;
-    filter: blur(1px);
-    opacity: 0.6;
-}
-
-/* Efeito sutil de energia */
-.tabs::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 15px;
-    background: radial-gradient(circle at 50% 50%, 
-        rgba(77, 208, 225, 0.05) 0%, 
-        transparent 70%);
-    pointer-events: none;
+    
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .tab-btn {
-    padding: 12px 18px; /* Reduzido o padding */
+    padding: 12px 18px;
     background: transparent;
     border: 2px solid transparent;
     color: var(--text-secondary);
     cursor: pointer;
-    border-radius: 12px; /* Reduzido o border-radius */
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border-radius: 12px;
+    transition: all 0.15s ease;
     white-space: nowrap;
     font-weight: 700;
     font-family: 'Orbitron', monospace;
     text-transform: uppercase;
-    letter-spacing: 1px; /* Reduzido o letter-spacing */
+    letter-spacing: 1px;
     position: relative;
-    overflow: hidden;
     z-index: 1;
     text-shadow: 0 0 10px currentColor;
-    filter: var(--brightness-glow);
-    font-size: 0.85rem; /* Reduzido o tamanho da fonte */
-    flex: 0 1 auto; /* Permite flexibilidade sem crescer demais */
-    min-width: 100px; /* Largura mínima */
-    max-width: 140px; /* Largura máxima */
-}
-
-/* Efeito de luz correndo pelo botão */
-.tab-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(77, 208, 225, 0.2), 
-        rgba(77, 208, 225, 0.3), 
-        rgba(77, 208, 225, 0.2), 
-        transparent);
-    transition: left 0.6s ease;
-    z-index: -1;
-}
-
-/* Efeito de energia no fundo */
-.tab-btn::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: radial-gradient(circle, var(--neon-cyan) 0%, transparent 70%);
-    opacity: 0;
-    transform: translate(-50%, -50%);
-    transition: all 0.4s ease;
-    z-index: -1;
-}
-
-.tab-btn:hover::before {
-    left: 100%;
-}
-
-.tab-btn:hover::after {
-    width: 150px;
-    height: 150px;
-    opacity: 0.2;
+    font-size: 0.85rem;
+    flex: 0 1 auto;
+    min-width: 100px;
+    max-width: 140px;
 }
 
 .tab-btn:hover {
     border-color: var(--neon-cyan);
     color: var(--neon-cyan-bright);
-    text-shadow: var(--text-glow-strong);
-    box-shadow: 
-        0 0 15px var(--neon-cyan-glow),
-        inset 0 0 10px rgba(77, 208, 225, 0.08);
+    text-shadow: var(--text-glow);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
     transform: translateY(-1px);
 }
 
 .tab-btn.active {
-    background: var(--gradient-cyan);
+    background: var(--neon-cyan);
     color: var(--bg-primary);
     font-weight: 900;
     border-color: var(--neon-green);
     box-shadow: 
         0 0 20px var(--neon-green-glow),
-        0 0 30px var(--neon-green-shadow),
-        inset 0 0 15px rgba(255, 255, 255, 0.15);
+        0 0 30px var(--neon-green-shadow);
     text-shadow: none;
 }
 
 .tab-content {
     display: none;
-    background: linear-gradient(135deg, 
-        var(--bg-card) 0%, 
-        rgba(0, 20, 40, 0.7) 50%, 
-        var(--bg-card) 100%);
+    background: var(--bg-card);
     border-radius: 15px;
     padding: 25px;
     border: 1px solid var(--neon-cyan);
     box-shadow: 
-        0 0 20px var(--neon-cyan-glow),
-        inset 0 0 15px var(--bg-panel-glow);
-    backdrop-filter: var(--blur-light);
+        0 0 20px var(--neon-cyan-glow);
+    
     position: relative;
-    overflow: hidden;
-}
-
-/* Efeito sutil de energia no conteúdo */
-.tab-content::before {
-    content: '';
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    right: -1px;
-    bottom: -1px;
-    background: linear-gradient(45deg, 
-        var(--neon-cyan), 
-        transparent 40%, 
-        var(--neon-green) 60%, 
-        transparent 80%, 
-        var(--neon-cyan));
-    border-radius: 16px;
-    z-index: -1;
-    opacity: 0.4;
 }
 
 .tab-content.active {
     display: block;
-    animation: tabAppear 0.5s ease-out;
-}
-
-@keyframes tabAppear {
-    from {
-        opacity: 0;
-        transform: translateY(20px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
 }
 
 .tab-content h2 {
@@ -695,26 +368,9 @@ body::after {
     margin-bottom: 30px;
     font-size: 2.2rem;
     text-align: center;
-    text-shadow: var(--text-glow-strong);
+    text-shadow: var(--text-glow);
     text-transform: uppercase;
     letter-spacing: 3px;
-    animation: headerGlow 3s ease-in-out infinite alternate;
-}
-
-@keyframes headerGlow {
-    from {
-        text-shadow: 
-            0 0 15px var(--neon-green-glow),
-            0 0 30px var(--neon-green-glow);
-        color: var(--neon-green);
-    }
-    to {
-        text-shadow: 
-            0 0 25px var(--neon-green-glow),
-            0 0 40px var(--neon-green-glow),
-            0 0 55px var(--neon-green-shadow);
-        color: var(--neon-green-bright);
-    }
 }
 
 .tab-content h3 {
@@ -729,7 +385,7 @@ body::after {
     font-family: 'Orbitron', monospace;
 }
 
-/* Título para seção de atitudes */
+
 .atitudes-column h3 {
     color: var(--neon-green);
     font-size: 1.2rem;
@@ -752,7 +408,7 @@ body::after {
     letter-spacing: 1px;
 }
 
-/* Forms NEON ULTRA INTENSOS */
+
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -787,17 +443,12 @@ body::after {
     padding: 12px 15px;
     border: 1px solid var(--neon-cyan);
     border-radius: 8px;
-    background: linear-gradient(135deg, 
-        rgba(26, 31, 41, 0.8) 0%, 
-        rgba(36, 41, 54, 0.6) 100%);
+    background: var(--bg-card);
     color: var(--text-primary);
-    transition: all 0.3s ease;
+    transition: all 0.15s ease;
     font-family: 'Roboto', sans-serif;
     font-size: 1rem;
-    backdrop-filter: var(--blur-light);
-    box-shadow: 
-        0 0 10px var(--neon-cyan-glow),
-        inset 0 0 8px rgba(77, 208, 225, 0.05);
+    box-shadow: 0 0 8px var(--neon-cyan-glow);
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
@@ -812,61 +463,31 @@ body::after {
 .form-group textarea:focus {
     outline: none;
     border-color: var(--neon-green);
-    box-shadow: 
-        0 0 30px var(--neon-green-glow),
-        0 0 50px var(--neon-green-shadow),
-        inset 0 0 25px rgba(0, 255, 65, 0.2);
-    background: linear-gradient(135deg, 
-        rgba(0, 10, 25, 0.9) 0%, 
-        rgba(0, 30, 50, 0.7) 100%);
-    transform: translateY(-2px);
+    box-shadow: 0 0 15px var(--neon-green-glow);
+    background: var(--bg-secondary);
+    transform: translateY(-1px);
     color: var(--neon-green-bright);
 }
 
-/* Efeito de digitação nos inputs */
+
 .form-group input:not(:placeholder-shown),
 .form-group textarea:not(:placeholder-shown) {
     border-color: var(--neon-green);
-    box-shadow: 
-        0 0 25px var(--neon-green-glow),
-        inset 0 0 20px rgba(0, 255, 65, 0.15);
+    box-shadow: 0 0 12px var(--neon-green-glow);
 }
 
-/* Seções NEON INTENSAS */
+
 .section {
     margin-bottom: 35px;
     padding: 25px;
-    background: linear-gradient(135deg, 
-        var(--bg-card) 0%, 
-        rgba(0, 20, 40, 0.6) 50%, 
-        var(--bg-card) 100%);
+    background: var(--bg-card);
     border-radius: 18px;
     border: 2px solid var(--neon-cyan);
     box-shadow: 
         0 0 30px var(--neon-cyan-glow),
         inset 0 0 25px var(--bg-card-glow);
-    backdrop-filter: var(--blur-light);
+    
     position: relative;
-    overflow: hidden;
-}
-
-/* Efeito de energia nas bordas das seções */
-.section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 18px;
-    background: linear-gradient(90deg, 
-        transparent 0%,
-        var(--neon-cyan-shadow) 25%,
-        transparent 50%,
-        var(--neon-pink-shadow) 75%,
-        transparent 100%);
-    pointer-events: none;
-    opacity: 0.4;
 }
 
 .instruction {
@@ -880,7 +501,7 @@ body::after {
     letter-spacing: 1px;
 }
 
-/* Layout Atitudes e Perícias ULTRA NEON */
+
 .atributos-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -894,16 +515,12 @@ body::after {
     min-width: 0;
     display: flex;
     flex-direction: column;
-    background: linear-gradient(135deg, 
-        var(--bg-card) 0%, 
-        rgba(0, 30, 60, 0.5) 100%);
+    background: var(--bg-card);
     border-radius: 12px;
     border: 2px solid var(--neon-green);
     padding: 15px;
-    box-shadow: 
-        0 0 25px var(--neon-green-glow),
-        inset 0 0 15px rgba(0, 255, 65, 0.1);
-    backdrop-filter: var(--blur-light);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
+    
     position: relative;
     min-height: 400px;
 }
@@ -911,84 +528,19 @@ body::after {
 .status-column {
     gap: 0;
     border-color: var(--neon-pink);
-    box-shadow: 
-        0 0 25px var(--neon-pink-glow),
-        inset 0 0 15px rgba(255, 0, 128, 0.1);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
 }
 
-/* Efeito de pulso nas colunas */
-.atitudes-column::before,
-.status-column::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    border-radius: 14px;
-    background: linear-gradient(45deg, 
-        var(--neon-green), 
-        transparent 30%, 
-        var(--neon-cyan) 70%, 
-        var(--neon-green));
-    z-index: -1;
-    animation: columnPulse 4s ease-in-out infinite;
-    opacity: 0.6;
-}
 
-.status-column::before {
-    background: linear-gradient(45deg, 
-        var(--neon-pink), 
-        transparent 30%, 
-        var(--neon-purple) 70%, 
-        var(--neon-pink));
-}
-
-@keyframes columnPulse {
-    0%, 100% { 
-        opacity: 0.6;
-        transform: scale(1);
-    }
-    50% { 
-        opacity: 0.9;
-        transform: scale(1.01);
-    }
-}
-
-/* Perícias em largura total NEON */
 .pericias-full-width {
     width: 100%;
-    background: linear-gradient(135deg, 
-        var(--bg-card) 0%, 
-        rgba(0, 40, 80, 0.4) 100%);
+    background: var(--bg-card);
     border-radius: 15px;
     border: 2px solid var(--neon-purple);
     padding: 15px;
-    box-shadow: 
-        0 0 25px var(--neon-purple-glow),
-        inset 0 0 15px rgba(128, 0, 255, 0.1);
-    backdrop-filter: var(--blur-light);
+    box-shadow: 0 0 25px var(--neon-purple-glow);
     position: relative;
     margin-top: 20px;
-}
-
-/* Efeito de energia nas perícias */
-.pericias-full-width::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    border-radius: 17px;
-    background: linear-gradient(45deg, 
-        var(--neon-purple), 
-        transparent 25%, 
-        var(--neon-yellow) 50%, 
-        transparent 75%, 
-        var(--neon-purple));
-    z-index: -1;
-    opacity: 0.7;
 }
 
 .pericias-grid-full {
@@ -1005,7 +557,7 @@ body::after {
     width: 100%;
 }
 
-/* Layouts específicos para desktop e mobile */
+
 .desktop-layout {
     display: grid;
 }
@@ -1014,7 +566,7 @@ body::after {
     display: none;
 }
 
-/* Atitudes NEON ULTRA INTENSAS */
+
 .atitudes-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -1029,50 +581,20 @@ body::after {
     align-items: center;
     justify-content: space-between;
     padding: 12px;
-    background: linear-gradient(135deg, 
-        rgba(0, 10, 25, 0.8) 0%, 
-        rgba(0, 30, 60, 0.6) 100%);
+    background: var(--bg-secondary);
     border-radius: 8px;
     border: 2px solid var(--neon-cyan);
-    box-shadow: 
-        0 0 15px var(--neon-cyan-glow),
-        inset 0 0 12px rgba(0, 255, 255, 0.1);
-    backdrop-filter: var(--blur-light);
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
+    
+    transition: all 0.15s ease;
     position: relative;
-    overflow: hidden;
     min-height: 50px;
-}
-
-/* Efeito de energia fluindo pela atitude */
-.atitude-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(0, 255, 255, 0.3), 
-        rgba(0, 255, 255, 0.5), 
-        rgba(0, 255, 255, 0.3), 
-        transparent);
-    transition: left 0.6s ease;
-    z-index: 0;
 }
 
 .atitude-item:hover {
     border-color: var(--neon-green);
-    box-shadow: 
-        0 0 20px var(--neon-green-glow),
-        0 0 30px var(--neon-green-shadow),
-        inset 0 0 12px rgba(0, 255, 65, 0.15);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
     transform: translateY(-1px) scale(1.005);
-}
-
-.atitude-item:hover::before {
-    left: 100%;
 }
 
 .atitude-item label {
@@ -1088,7 +610,7 @@ body::after {
     font-size: 0.85rem;
 }
 
-/* Caixas de Dados Interativas NEON ULTRA */
+
 .dice-boxes {
     display: flex;
     gap: 8px;
@@ -1105,25 +627,21 @@ body::after {
     justify-content: center;
     border: 2px solid var(--neon-cyan);
     border-radius: 6px;
-    background: linear-gradient(135deg, 
-        rgba(0, 5, 20, 0.9) 0%, 
-        rgba(0, 20, 40, 0.7) 100%);
+    background: var(--bg-card);
     color: var(--neon-cyan);
     font-weight: 900;
     font-size: 0.8rem;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: all 0.3s ease;
     user-select: none;
     font-family: 'Orbitron', monospace;
     text-shadow: var(--text-glow);
-    box-shadow: 
-        0 0 12px var(--neon-cyan-glow),
-        inset 0 0 8px rgba(0, 255, 255, 0.1);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
     position: relative;
     overflow: hidden;
 }
 
-/* Efeito de energia nos dados */
+
 .dice-box::before {
     content: '';
     position: absolute;
@@ -1135,12 +653,12 @@ body::after {
     background: radial-gradient(circle, var(--neon-cyan) 0%, transparent 70%);
     opacity: 0;
     transform: translate(-50%, -50%);
-    transition: all 0.4s ease;
+    transition: all 0.2s ease;
     z-index: -1;
 }
 
 .dice-box:hover::before {
-    width: 25px; /* Tamanho reduzido para ficar contido */
+    width: 25px; 
     height: 25px;
     opacity: 0.3;
 }
@@ -1155,142 +673,52 @@ body::after {
 .dice-box:hover {
     border-color: var(--neon-green);
     color: var(--neon-green-bright);
-    box-shadow: 
-        0 0 15px var(--neon-green-glow), /* Reduzido */
-        inset 0 0 15px rgba(0, 255, 65, 0.2);
-    transform: translateY(-2px) scale(1.05); /* Reduzido */
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
+    transform: translateY(-2px) scale(1.02); 
 }
 
 .dice-box.active {
     background: var(--gradient-green);
     color: var(--bg-primary);
     border-color: var(--neon-green-bright);
-    box-shadow: 
-        0 0 20px var(--neon-green-glow), /* Reduzido */
-        inset 0 0 25px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
     text-shadow: none;
-    animation: diceActivePulse 2s ease-in-out infinite;
-    transform: scale(1.1); /* Reduzido */
-}
-
-@keyframes diceActivePulse {
-    0%, 100% { 
-        box-shadow: 
-            0 0 20px var(--neon-green-glow),
-            inset 0 0 25px rgba(255, 255, 255, 0.3);
-        transform: scale(1.1);
-    }
-    50% { 
-        box-shadow: 
-            0 0 25px var(--neon-green-glow),
-            inset 0 0 30px rgba(255, 255, 255, 0.4);
-        transform: scale(1.12);
-    }
+    transform: scale(1.1);
 }
 
 .dice-box.active + .dice-box.active {
     margin-left: 3px;
 }
 
-.dice-boxes:has(.dice-box.active) .dice-box.active {
-    animation: diceActiveMegaPulse 1.5s infinite;
-}
 
-@keyframes diceActiveMegaPulse {
-    0%, 100% { 
-        box-shadow: 
-            0 0 40px var(--neon-green-glow),
-            0 0 60px var(--neon-green-shadow);
-        transform: scale(1.15);
-    }
-    50% { 
-        box-shadow: 
-            0 0 60px var(--neon-green-glow),
-            0 0 90px var(--neon-green-shadow),
-            0 0 120px var(--neon-green-shadow);
-        transform: scale(1.2);
-    }
-}
-
-/* Dados Bugados NEON INTENSO */
 .dice-box.bugado {
     border-color: var(--neon-pink);
     color: var(--neon-pink);
-    box-shadow: 
-        0 0 20px var(--neon-pink-glow),
-        inset 0 0 15px rgba(255, 0, 128, 0.1);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
 }
 
 .dice-box.bugado:hover {
     border-color: var(--neon-red);
     color: var(--neon-red-bright);
-    box-shadow: 
-        0 0 35px var(--neon-red-glow),
-        0 0 55px var(--neon-red-shadow),
-        inset 0 0 20px rgba(255, 0, 64, 0.2);
-    animation: bugadoGlitch 0.3s ease-in-out;
-}
-
-@keyframes bugadoGlitch {
-    0%, 100% { transform: translateY(-3px) scale(1.1); }
-    25% { transform: translateY(-2px) scale(1.12) skew(1deg); }
-    75% { transform: translateY(-4px) scale(1.08) skew(-1deg); }
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
 }
 
 .dice-box.bugado.active {
     background: var(--gradient-pink);
     color: var(--bg-primary);
     border-color: var(--neon-pink-bright);
-    box-shadow: 
-        0 0 45px var(--neon-pink-glow),
-        0 0 70px var(--neon-pink-shadow),
-        inset 0 0 30px rgba(255, 255, 255, 0.3);
-    animation: bugadoActivePulse 1s infinite;
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
 }
 
-@keyframes bugadoActivePulse {
-    0%, 100% { 
-        box-shadow: 
-            0 0 45px var(--neon-pink-glow),
-            0 0 70px var(--neon-pink-shadow);
-        filter: hue-rotate(0deg);
-    }
-    50% { 
-        box-shadow: 
-            0 0 60px var(--neon-pink-glow),
-            0 0 90px var(--neon-pink-shadow),
-            0 0 120px var(--neon-red-shadow);
-        filter: hue-rotate(15deg);
-    }
-}
 
-/* Especialização NEON INTENSO */
 .dice-box.smaller.active {
     background: var(--gradient-yellow);
     color: var(--bg-primary);
     border-color: var(--neon-yellow-bright);
-    box-shadow: 
-        0 0 35px var(--neon-yellow-glow),
-        0 0 55px var(--neon-yellow-shadow),
-        inset 0 0 25px rgba(255, 255, 255, 0.3);
-    animation: especializacaoGlow 2s ease-in-out infinite;
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
 }
 
-@keyframes especializacaoGlow {
-    0%, 100% { 
-        box-shadow: 
-            0 0 35px var(--neon-yellow-glow),
-            0 0 55px var(--neon-yellow-shadow);
-    }
-    50% { 
-        box-shadow: 
-            0 0 45px var(--neon-yellow-glow),
-            0 0 70px var(--neon-yellow-shadow),
-            0 0 95px var(--neon-orange-shadow);
-    }
-}
 
-/* Perícias NEON ULTRA INTENSAS */
 .pericias-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -1303,51 +731,23 @@ body::after {
     flex-direction: column;
     gap: 4px;
     padding: 8px;
-    background: linear-gradient(135deg, 
-        rgba(0, 10, 25, 0.8) 0%, 
-        rgba(0, 40, 80, 0.6) 100%);
+    background: var(--bg-card);
     border-radius: 6px;
     border: 1px solid var(--neon-purple);
     min-height: 90px;
-    box-shadow: 
-        0 0 10px var(--neon-purple-glow),
-        inset 0 0 8px rgba(128, 0, 255, 0.1);
-    backdrop-filter: var(--blur-light);
-    transition: all 0.3s ease;
+    box-shadow: 0 0 10px var(--neon-purple-glow);
+    transition: all 0.2s ease;
     position: relative;
-    overflow: hidden;
 }
 
-/* Efeito de energia fluindo pelas perícias */
-.pericia-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(128, 0, 255, 0.3), 
-        rgba(128, 0, 255, 0.5), 
-        rgba(128, 0, 255, 0.3), 
-        transparent);
-    transition: left 0.6s ease;
-    z-index: 0;
-}
+
 
 .pericia-item:hover {
     border-color: var(--neon-yellow);
-    box-shadow: 
-        0 0 35px var(--neon-yellow-glow),
-        0 0 50px var(--neon-yellow-shadow),
-        inset 0 0 25px rgba(255, 255, 0, 0.15);
-    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 0 15px var(--neon-yellow-glow);
 }
 
-.pericia-item:hover::before {
-    left: 100%;
-}
+
 
 .pericia-item label {
     font-weight: 700;
@@ -1378,7 +778,7 @@ body::after {
     gap: 4px;
 }
 
-/* Ajustes específicos para caixas de dados nas perícias NEON */
+
 .pericia-controls .dice-box {
     width: 30px;
     height: 30px;
@@ -1399,20 +799,15 @@ body::after {
     padding: 5px 8px;
     border: 1px solid var(--neon-purple);
     border-radius: 6px;
-    background: linear-gradient(135deg, 
-        rgba(0, 5, 20, 0.9) 0%, 
-        rgba(0, 20, 40, 0.7) 100%);
+    background: var(--bg-card);
     color: var(--neon-purple);
     font-size: 0.8rem;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     width: 100%;
     height: 28px;
     font-family: 'Roboto', sans-serif;
     text-shadow: 0 0 4px rgba(255, 255, 255, 0.2);
-    box-shadow: 
-        0 0 10px var(--neon-purple-glow),
-        inset 0 0 10px rgba(128, 0, 255, 0.1);
-    backdrop-filter: var(--blur-light);
+    box-shadow: 0 0 10px var(--neon-purple-glow);
 }
 
 .especializacao-input::placeholder {
@@ -1424,17 +819,11 @@ body::after {
     outline: none;
     border-color: var(--neon-yellow);
     color: var(--neon-yellow-bright);
-    box-shadow: 
-        0 0 25px var(--neon-yellow-glow),
-        0 0 40px var(--neon-yellow-shadow),
-        inset 0 0 20px rgba(255, 255, 0, 0.15);
-    background: linear-gradient(135deg, 
-        rgba(0, 10, 25, 0.9) 0%, 
-        rgba(0, 30, 50, 0.7) 100%);
-    transform: translateY(-1px);
+    box-shadow: 0 0 15px var(--neon-yellow-glow);
+    background: var(--bg-secondary);
 }
 
-/* Estado desabilitado para botões de especialização NEON */
+
 .dice-box.disabled {
     opacity: 0.2 !important;
     cursor: not-allowed !important;
@@ -1449,7 +838,7 @@ body::after {
     border-color: #333 !important;
 }
 
-/* Status Messages NEON */
+
 .status-message {
     text-align: center;
     padding: 15px;
@@ -1459,12 +848,12 @@ body::after {
     font-family: 'Orbitron', monospace;
     text-transform: uppercase;
     letter-spacing: 1px;
-    backdrop-filter: var(--blur-light);
+    
     position: relative;
     overflow: hidden;
 }
 
-/* Efeito de energia nas mensagens */
+
 .status-message::before {
     content: '';
     position: absolute;
@@ -1472,60 +861,27 @@ body::after {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.2), 
-        rgba(255, 255, 255, 0.4), 
-        rgba(255, 255, 255, 0.2), 
-        transparent);
-    animation: messageEnergyFlow 3s ease-in-out infinite;
-}
-
-@keyframes messageEnergyFlow {
-    0% { left: -100%; }
-    100% { left: 100%; }
-}
-
+    background: var(--bg-card);
 .status-message.valid {
-    background: linear-gradient(135deg, 
-        rgba(0, 255, 65, 0.3) 0%, 
-        rgba(0, 255, 65, 0.1) 100%);
+    background: var(--bg-card);
     color: var(--neon-green);
     border: 2px solid var(--neon-green);
-    box-shadow: 
-        0 0 30px var(--neon-green-glow),
-        inset 0 0 20px rgba(0, 255, 65, 0.1);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
     text-shadow: var(--text-glow);
 }
 
 .status-message.invalid {
-    background: linear-gradient(135deg, 
-        rgba(255, 0, 64, 0.3) 0%, 
-        rgba(255, 0, 64, 0.1) 100%);
+    background: var(--bg-card);
     color: var(--neon-red);
     border: 2px solid var(--neon-red);
-    box-shadow: 
-        0 0 30px var(--neon-red-glow),
-        inset 0 0 20px rgba(255, 0, 64, 0.1);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
     text-shadow: var(--text-glow);
-    animation: errorPulse 2s ease-in-out infinite;
 }
 
-@keyframes errorPulse {
-    0%, 100% { 
-        box-shadow: 
-            0 0 30px var(--neon-red-glow),
-            inset 0 0 20px rgba(255, 0, 64, 0.1);
-    }
-    50% { 
-        box-shadow: 
-            0 0 45px var(--neon-red-glow),
-            0 0 60px var(--neon-red-shadow),
-            inset 0 0 25px rgba(255, 0, 64, 0.2);
-    }
+
 }
 
-/* Ampliações NEON ULTRA */
+
 .checkbox-group {
     margin-top: 20px;
 }
@@ -1536,12 +892,10 @@ body::after {
     gap: 15px;
     cursor: pointer;
     padding: 12px 18px;
-    background: linear-gradient(135deg, 
-        rgba(0, 10, 25, 0.7) 0%, 
-        rgba(0, 30, 60, 0.5) 100%);
+    background: var(--bg-card);
     border-radius: 10px;
     border: 2px solid var(--neon-green);
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: all 0.2s ease;
     margin-bottom: 8px;
     font-family: 'Orbitron', monospace;
     text-transform: uppercase;
@@ -1549,19 +903,14 @@ body::after {
     font-weight: 600;
     color: var(--neon-green);
     text-shadow: var(--text-glow);
-    box-shadow: 
-        0 0 20px var(--neon-green-glow),
-        inset 0 0 15px rgba(0, 255, 65, 0.1);
-    backdrop-filter: var(--blur-light);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
+    
 }
 
 .checkbox-group label:hover {
     border-color: var(--neon-cyan);
     color: var(--neon-cyan-bright);
-    box-shadow: 
-        0 0 30px var(--neon-cyan-glow),
-        0 0 45px var(--neon-cyan-shadow),
-        inset 0 0 20px rgba(0, 255, 255, 0.15);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
     transform: translateY(-2px) scale(1.02);
 }
 
@@ -1569,16 +918,11 @@ body::after {
     color: var(--neon-green);
     font-weight: 900;
     font-size: 1.4rem;
-    text-shadow: var(--text-glow-strong);
+    text-shadow: var(--text-glow);
     filter: var(--brightness-glow);
 }
 
-/* Layout vertical de carga já implementado com .carga-options-vertical */
 
-@keyframes sparkle {
-    from { opacity: 0.7; transform: scale(1); }
-    to { opacity: 1; transform: scale(1.2); }
-}
 
 .equipamentos-grid {
     display: grid;
@@ -1591,26 +935,22 @@ body::after {
     align-items: center;
     gap: 12px;
     padding: 15px;
-    background: linear-gradient(135deg, 
-        rgba(0, 10, 25, 0.7) 0%, 
-        rgba(0, 30, 60, 0.5) 100%);
+    background: var(--bg-card);
     border-radius: 10px;
     border: 2px solid var(--neon-purple);
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: all 0.2s ease;
     font-family: 'Roboto', sans-serif;
     font-weight: 600;
     color: var(--text-primary);
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
-    box-shadow: 
-        0 0 20px var(--neon-purple-glow),
-        inset 0 0 15px rgba(128, 0, 255, 0.1);
-    backdrop-filter: var(--blur-light);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
+    
     position: relative;
     overflow: hidden;
 }
 
-/* Efeito de energia nos itens de equipamento */
+
 .equipment-item::before {
     content: '';
     position: absolute;
@@ -1618,21 +958,13 @@ body::after {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(128, 0, 255, 0.3), 
-        rgba(128, 0, 255, 0.5), 
-        rgba(128, 0, 255, 0.3), 
-        transparent);
-    transition: left 0.6s ease;
+    background: var(--bg-card);
+    transition: left 0.2s ease;
 }
 
 .equipment-item:hover {
     border-color: var(--neon-green);
-    box-shadow: 
-        0 0 30px var(--neon-green-glow),
-        0 0 45px var(--neon-green-shadow),
-        inset 0 0 20px rgba(0, 255, 65, 0.15);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
     transform: translateY(-2px) scale(1.02);
 }
 
@@ -1675,7 +1007,7 @@ body::after {
     color: #66cc77;
 }
 
-/* Layout de Equipamentos com Carga e Ampliações */
+
 .equipamentos-top-grid {
     display: grid;
     grid-template-columns: 200px 1fr;
@@ -1684,16 +1016,12 @@ body::after {
 }
 
 .carga-section {
-    background: linear-gradient(135deg, 
-        var(--bg-card) 0%, 
-        rgba(0, 40, 80, 0.4) 100%);
+    background: var(--bg-card);
     padding: 20px;
     border-radius: 15px;
     border: 2px solid var(--neon-green);
-    box-shadow: 
-        0 0 25px var(--neon-green-glow),
-        inset 0 0 15px rgba(0, 255, 65, 0.1);
-    backdrop-filter: var(--blur-light);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
+    
     position: relative;
 }
 
@@ -1711,13 +1039,11 @@ body::after {
     align-items: center;
     justify-content: center;
     padding: 12px 20px;
-    background: linear-gradient(135deg, 
-        rgba(0, 5, 20, 0.9) 0%, 
-        rgba(0, 20, 40, 0.7) 100%);
+    background: var(--bg-card);
     border: 2px solid var(--neon-cyan);
     border-radius: 10px;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: all 0.2s ease;
     font-size: 0.9rem;
     font-weight: 700;
     font-family: 'Orbitron', monospace;
@@ -1725,16 +1051,14 @@ body::after {
     letter-spacing: 1px;
     color: var(--neon-cyan);
     text-shadow: var(--text-glow);
-    box-shadow: 
-        0 0 15px var(--neon-cyan-glow),
-        inset 0 0 10px rgba(0, 255, 255, 0.1);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
     position: relative;
     overflow: hidden;
     width: 160px;
     user-select: none;
 }
 
-/* Efeito de energia nos botões de carga */
+
 .carga-options-vertical label::before {
     content: '';
     position: absolute;
@@ -1742,24 +1066,16 @@ body::after {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(0, 255, 255, 0.3), 
-        rgba(0, 255, 255, 0.5), 
-        rgba(0, 255, 255, 0.3), 
-        transparent);
-    transition: left 0.6s ease;
+    background: var(--bg-card);
+    transition: left 0.2s ease;
     z-index: 0;
 }
 
 .carga-options-vertical label:hover {
     border-color: var(--neon-green);
     color: var(--neon-green);
-    box-shadow: 
-        0 0 25px var(--neon-green-glow),
-        0 0 35px var(--neon-green-shadow),
-        inset 0 0 15px rgba(0, 255, 65, 0.15);
-    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
+    transform: translateY(-2px) scale(1.02);
 }
 
 .carga-options-vertical label:hover::before {
@@ -1772,24 +1088,19 @@ body::after {
 
 .carga-options-vertical input[type="radio"]:checked + span {
     color: var(--neon-yellow);
-    text-shadow: var(--text-glow-strong);
+    text-shadow: var(--text-glow);
     position: relative;
     z-index: 1;
 }
 
 .carga-options-vertical label:has(input[type="radio"]:checked) {
     border-color: var(--neon-yellow);
-    background: linear-gradient(135deg, 
-        rgba(20, 20, 0, 0.9) 0%, 
-        rgba(40, 40, 0, 0.7) 100%);
-    box-shadow: 
-        0 0 30px var(--neon-yellow-glow),
-        0 0 45px var(--neon-yellow-shadow),
-        inset 0 0 20px rgba(255, 255, 0, 0.15);
+    background: var(--bg-card);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
     color: var(--neon-yellow);
 }
 
-/* Título da seção com estilo cyberpunk */
+
 .carga-section h3 {
     color: var(--neon-green);
     font-size: 1.3rem;
@@ -1798,7 +1109,7 @@ body::after {
     font-family: 'Orbitron', monospace;
     text-transform: uppercase;
     letter-spacing: 2px;
-    text-shadow: var(--text-glow-strong);
+    text-shadow: var(--text-glow);
     border-bottom: 2px solid var(--neon-green);
     padding-bottom: 8px;
 }
@@ -1864,7 +1175,7 @@ body::after {
     gap: 6px;
 }
 
-/* Categorias de Equipamentos */
+
 .equipamentos-categorias {
     display: flex;
     flex-direction: column;
@@ -1930,7 +1241,7 @@ body::after {
     padding: 0 15px;
 }
 
-/* Grid harmonizado de Dano e Estresse */
+
 .damage-stress-table {
     display: grid;
     grid-template-rows: auto repeat(3, 1fr) auto;
@@ -1988,15 +1299,13 @@ body::after {
     min-height: 32px;
 }
 
-/* Blocos de Dano e Estresse NEON ULTRA INTENSOS */
+
 .damage-box, .stress-box {
     width: 32px;
     height: 32px;
     border: 3px solid;
     border-radius: 8px;
-    background: linear-gradient(135deg, 
-        rgba(0, 5, 20, 0.9) 0%, 
-        rgba(0, 20, 40, 0.7) 100%);
+    background: var(--bg-card);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2004,14 +1313,14 @@ body::after {
     font-weight: 900;
     font-family: 'Orbitron', monospace;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: all 0.2s ease;
     user-select: none;
-    backdrop-filter: var(--blur-light);
+    
     position: relative;
     overflow: hidden;
 }
 
-/* Efeito de energia nos blocos - CONTIDO */
+
 .damage-box::before, .stress-box::before {
     content: '';
     position: absolute;
@@ -2023,204 +1332,112 @@ body::after {
     background: radial-gradient(circle, currentColor  0%, transparent 70%);
     opacity: 0;
        transform: translate(-50%, -50%);
-    transition: all 0.4s ease;
+    transition: all 0.2s ease;
     z-index: -1;
-    max-width: 28px; /* Limita o tamanho máximo */
+    max-width: 28px; 
     max-height: 28px;
 }
 
 .damage-box:hover::before, .stress-box:hover::before {
-    width: 28px; /* Tamanho reduzido para ficar contido */
+    width: 28px; 
     height: 28px;
     opacity: 0.3;
 }
 
-/* Cores específicas para blocos de dano NEON - COM GLOW REDUZIDO */
+
 input[name^="dano-leve"] + .damage-box {
     border-color: var(--damage-light);
     color: var(--damage-light);
-    box-shadow: 
-        0 0 8px var(--damage-light-glow),
-        inset 0 0 15px rgba(255, 255, 0, 0.1);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
 }
 
 input[name^="dano-leve"] + .damage-box:hover {
     border-color: var(--neon-yellow-bright);
-    box-shadow: 
-        0 0 12px var(--damage-light-glow),
-        inset 0 0 20px rgba(255, 255, 0, 0.2);
-    transform: scale(1.05) translateY(-1px);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
+    transform: scale(1.02) translateY(-1px);
 }
 
 input[name^="dano-leve"]:checked + .damage-box {
     background: var(--gradient-yellow);
     border-color: var(--neon-yellow-bright);
     color: var(--bg-primary);
-    box-shadow: 
-        0 0 15px var(--damage-light-glow),
-        inset 0 0 25px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
     text-shadow: none;
-    animation: damageActivePulse 2s ease-in-out infinite;
 }
 
 input[name^="dano-moderado"] + .damage-box {
     border-color: var(--damage-moderate);
     color: var(--damage-moderate);
-    box-shadow: 
-        0 0 8px var(--damage-moderate-glow),
-        inset 0 0 15px rgba(255, 128, 0, 0.1);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
 }
 
 input[name^="dano-moderado"] + .damage-box:hover {
     border-color: var(--neon-orange-bright);
-    box-shadow: 
-        0 0 12px var(--damage-moderate-glow),
-        inset 0 0 20px rgba(255, 128, 0, 0.2);
-    transform: scale(1.05) translateY(-1px);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
+    transform: scale(1.02) translateY(-1px);
 }
 
 input[name^="dano-moderado"]:checked + .damage-box {
     background: var(--gradient-orange);
     border-color: var(--neon-orange-bright);
     color: var(--bg-primary);
-    box-shadow: 
-        0 0 15px var(--damage-moderate-glow),
-        inset 0 0 25px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
     text-shadow: none;
-    animation: damageActivePulse 2s ease-in-out infinite;
 }
 
 input[name="dano-grave"] + .damage-box {
     border-color: var(--damage-severe);
     color: var(--damage-severe);
-    box-shadow: 
-        0 0 8px var(--damage-severe-glow),
-        inset 0 0 15px rgba(255, 0, 64, 0.1);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
 }
 
 input[name="dano-grave"] + .damage-box:hover {
     border-color: var(--neon-red-bright);
-    box-shadow: 
-        0 0 12px var(--damage-severe-glow),
-        inset 0 0 20px rgba(255, 0, 64, 0.2);
-    transform: scale(1.05) translateY(-1px);
-    animation: severeGlitch 0.3s ease-in-out;
-}
-
-@keyframes severeGlitch {
-    0%, 100% { transform: scale(1.05) translateY(-1px); }
-    25% { transform: scale(1.07) translateY(-0.5px) skew(0.5deg); }
-    75% { transform: scale(1.03) translateY(-1.5px) skew(-0.5deg); }
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
+    transform: scale(1.02) translateY(-1px);
 }
 
 input[name="dano-grave"]:checked + .damage-box {
     background: var(--gradient-red);
     border-color: var(--neon-red-bright);
     color: var(--text-primary);
-    box-shadow: 
-        0 0 18px var(--damage-severe-glow),
-        inset 0 0 30px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-    animation: severeActivePulse 1.5s ease-in-out infinite;
 }
 
-@keyframes damageActivePulse {
-    0%, 100% { 
-        transform: scale(1);
-        filter: brightness(1);
-        box-shadow: 
-            0 0 15px var(--damage-light-glow),
-            inset 0 0 25px rgba(255, 255, 255, 0.3);
-    }
-    50% { 
-        transform: scale(1.02);
-        filter: brightness(1.1);
-        box-shadow: 
-            0 0 18px var(--damage-light-glow),
-            inset 0 0 30px rgba(255, 255, 255, 0.4);
-    }
-}
 
-@keyframes severeActivePulse {
-    0%, 100% { 
-        transform: scale(1);
-        filter: brightness(1) hue-rotate(0deg);
-        box-shadow: 
-            0 0 18px var(--damage-severe-glow),
-            inset 0 0 30px rgba(255, 255, 255, 0.3);
-    }
-    50% { 
-        transform: scale(1.03);
-        filter: brightness(1.2) hue-rotate(5deg);
-        box-shadow: 
-            0 0 22px var(--damage-severe-glow),
-            inset 0 0 35px rgba(255, 255, 255, 0.4);
-    }
-}
-
-/* Cores específicas para blocos de estresse NEON - COM GLOW REDUZIDO */
 input[name^="stress-"]:not([name="stress-special"]) + .stress-box {
     border-color: var(--stress-normal);
     color: var(--stress-normal);
-    box-shadow: 
-        0 0 8px var(--stress-normal-glow),
-        inset 0 0 15px rgba(0, 255, 255, 0.1);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
 }
 
 input[name^="stress-"]:not([name="stress-special"]) + .stress-box:hover {
     border-color: var(--neon-cyan-bright);
-    box-shadow: 
-        0 0 12px var(--stress-normal-glow),
-        inset 0 0 20px rgba(0, 255, 255, 0.2);
-    transform: scale(1.05) translateY(-1px);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
+    transform: scale(1.02) translateY(-1px);
 }
 
 input[name^="stress-"]:not([name="stress-special"]):checked + .stress-box {
     background: var(--gradient-cyan);
     border-color: var(--neon-cyan-bright);
     color: var(--bg-primary);
-    box-shadow: 
-        0 0 15px var(--stress-normal-glow),
-        inset 0 0 25px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
     text-shadow: none;
-    animation: stressActivePulse 2s ease-in-out infinite;
-}
-
-@keyframes stressActivePulse {
-    0%, 100% { 
-        transform: scale(1);
-        filter: brightness(1);
-        box-shadow: 
-            0 0 15px var(--stress-normal-glow),
-            inset 0 0 25px rgba(255, 255, 255, 0.3);
-    }
-    50% { 
-        transform: scale(1.02);
-        filter: brightness(1.1) saturate(1.1);
-        box-shadow: 
-            0 0 18px var(--stress-normal-glow),
-            inset 0 0 30px rgba(255, 255, 255, 0.4);
-    }
 }
 
 .stress-box.special {
-    background: linear-gradient(135deg, 
-        rgba(255, 0, 255, 0.3) 0%, 
-        rgba(128, 0, 255, 0.2) 100%);
+    background: var(--bg-card);
     border-color: var(--stress-special);
     color: var(--stress-special);
     font-weight: 900;
     text-shadow: var(--text-glow);
-    box-shadow: 
-        0 0 10px var(--stress-special-glow),
-        inset 0 0 20px rgba(255, 0, 128, 0.15);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
 }
 
 .stress-box.special:hover {
     border-color: var(--neon-pink-bright);
-    box-shadow: 
-        0 0 15px var(--stress-special-glow),
-        inset 0 0 25px rgba(255, 0, 128, 0.25);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
     transform: scale(1.1) translateY(-2px);
 }
 
@@ -2228,31 +1445,11 @@ input[type="checkbox"]:checked + .stress-box.special {
     background: var(--gradient-pink);
     border-color: var(--neon-pink-bright);
     color: var(--bg-primary);
-    box-shadow: 
-        0 0 20px var(--stress-special-glow),
-        inset 0 0 30px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
     text-shadow: none;
-    animation: specialStressPulse 1.5s ease-in-out infinite;
 }
 
-@keyframes specialStressPulse {
-    0%, 100% { 
-        transform: scale(1.05);
-        filter: brightness(1) hue-rotate(0deg);
-        box-shadow: 
-            0 0 20px var(--stress-special-glow),
-            inset 0 0 30px rgba(255, 255, 255, 0.3);
-    }
-    50% { 
-        transform: scale(1.08);
-        filter: brightness(1.2) hue-rotate(8deg);
-        box-shadow: 
-            0 0 25px var(--stress-special-glow),
-            inset 0 0 35px rgba(255, 255, 255, 0.4);
-    }
-}
 
-/* Responsivo */
 @media (max-width: 768px) {
     .container {
         padding: 10px;
@@ -2281,7 +1478,7 @@ input[type="checkbox"]:checked + .stress-box.special {
         letter-spacing: 0.5px;
     }
     
-    /* Garantir que outros elementos não interfiram com a navbar */
+    
     .tab-content,
     .container,
     main {
@@ -2289,14 +1486,14 @@ input[type="checkbox"]:checked + .stress-box.special {
         z-index: 1;
     }
     
-    /* Atributos responsivos */
+    
     .atributos-container {
         grid-template-columns: 1fr;
         gap: 15px;
         margin-bottom: 15px;
     }
     
-    /* Alternar layouts para mobile */
+    
     .desktop-layout {
         display: none;
     }
@@ -2306,7 +1503,7 @@ input[type="checkbox"]:checked + .stress-box.special {
     }
     
     .pericias-grid-full {
-        grid-template-columns: repeat(2, 1fr); /* 2 colunas no mobile */
+        grid-template-columns: repeat(2, 1fr); 
         gap: 8px;
     }
     
@@ -2414,7 +1611,7 @@ input[type="checkbox"]:checked + .stress-box.special {
         padding-top: 60px;
     }
     
-    /* Indicadores de dano responsivos */
+    
     .damage-indicators {
         right: 10px;
         top: 70px;
@@ -2435,7 +1632,7 @@ input[type="checkbox"]:checked + .stress-box.special {
         font-size: 0.7rem;
     }
     
-    /* Equipamentos - Layout com Carga e Ampliações */
+    
     .equipamentos-top-grid {
         grid-template-columns: 1fr;
         gap: 15px;
@@ -2475,40 +1672,13 @@ input[type="checkbox"]:checked + .stress-box.special {
     }
 }
 
-/* Animações NEON INTENSAS */
-@keyframes megaGlow {
-    0% { 
-        box-shadow: 0 0 20px var(--neon-cyan-glow);
-        filter: brightness(1);
-    }
-    25% { 
-        box-shadow: 0 0 20px var(--neon-green-glow);
-        filter: brightness(1.1);
-    }
-    50% { 
-        box-shadow: 0 0 25px var(--neon-pink-glow);
-        filter: brightness(1.15);
-    }
-    75% { 
-        box-shadow: 0 0 20px var(--neon-purple-glow);
-        filter: brightness(1.1);
-    }
-    100% { 
-        box-shadow: 0 0 20px var(--neon-cyan-glow);
-        filter: brightness(1);
-    }
-}
 
-/* Custom Scrollbar NEON */
 ::-webkit-scrollbar {
     width: 12px;
 }
 
 ::-webkit-scrollbar-track {
-    background: linear-gradient(180deg, 
-        var(--bg-primary) 0%, 
-        var(--bg-secondary) 50%, 
-        var(--bg-primary) 100%);
+    background: var(--bg-card);
     border-radius: 6px;
 }
 
@@ -2516,32 +1686,27 @@ input[type="checkbox"]:checked + .stress-box.special {
     background: var(--gradient-cyan);
     border-radius: 6px;
     border: 2px solid var(--bg-primary);
-    box-shadow: 
-        0 0 15px var(--neon-cyan-glow),
-        inset 0 0 10px rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
 }
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--gradient-green);
-    box-shadow: 
-        0 0 25px var(--neon-green-glow),
-        0 0 35px var(--neon-green-shadow),
-        inset 0 0 15px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
 }
 
 ::-webkit-scrollbar-corner {
     background: var(--bg-primary);
 }
 
-/* Esconder checkboxes reais */
+
 input[type="checkbox"],
 input[type="radio"] {
     display: none;
 }
 
-/* Efeito de brilho global para elementos interativos */
+
 .interactive-glow {
-    transition: all 0.4s ease;
+    transition: all 0.2s ease;
 }
 
 .interactive-glow:hover {
@@ -2549,7 +1714,7 @@ input[type="radio"] {
     transform: translateY(-2px);
 }
 
-/* Efeito de partículas flutuantes */
+
 body::after {
     content: '';
     position: fixed;
@@ -2565,18 +1730,12 @@ body::after {
         radial-gradient(2px 2px at 160px 30px, var(--neon-purple), transparent);
     background-repeat: repeat;
     background-size: 200px 100px;
-    animation: sparkles 8s linear infinite;
     pointer-events: none;
     z-index: -1;
     opacity: 0.1;
 }
 
-@keyframes sparkles {
-    0% { transform: translateY(0px); }
-    100% { transform: translateY(-100px); }
-}
 
-/* Novos estilos para blocos de Dano e Estresse */
 .pain-status-wrapper {
   display: flex;
   flex-direction: column;
@@ -2622,7 +1781,7 @@ body::after {
   justify-content: space-between;
 }
 
-/* Status unificado - Harmonização com Atitudes */
+
 .status-unified-section {
   height: 100%;
   min-height: 320px;
@@ -2637,7 +1796,7 @@ body::after {
   gap: 20px;
 }
 
-/* Dano e Estresse lado a lado */
+
 .damage-stress-unified {
   display: flex;
   gap: 20px;
@@ -2666,7 +1825,7 @@ body::after {
   padding-bottom: 5px;
 }
 
-/* Dano - texto ao lado dos blocos */
+
 .damage-unified-grid {
   display: flex;
   flex-direction: column;
@@ -2692,7 +1851,7 @@ body::after {
   flex-shrink: 0;
 }
 
-/* Container flex para os marcadores à direita */
+
 .damage-unified-row label {
   margin-left: auto;
 }
@@ -2705,7 +1864,7 @@ body::after {
   margin-left: 8px;
 }
 
-/* Estresse - 2 colunas de 3 + S */
+
 .stress-unified-content {
   display: flex;
   flex-direction: column;
@@ -2737,7 +1896,7 @@ body::after {
   margin-top: 10px;
 }
 
-/* Estados NEON ULTRA INTENSOS */
+
 .estados-unified-section h3 {
   color: var(--neon-green);
   margin-bottom: 10px;
@@ -2748,7 +1907,7 @@ body::after {
   font-family: 'Orbitron', monospace;
   text-transform: uppercase;
   letter-spacing: 1.2px;
-  text-shadow: var(--text-glow-strong);
+  text-shadow: var(--text-glow);
 }
 
 .estados-unified-grid {
@@ -2759,26 +1918,22 @@ body::after {
 }
 
 .estado-unified-item {
-  background: linear-gradient(135deg, 
-      var(--bg-card) 0%, 
-      rgba(0, 40, 80, 0.5) 100%);
+  background: var(--bg-card);
   border-radius: 8px;
   border: 2px solid var(--neon-purple);
   padding: 10px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  box-shadow: 
-      0 0 18px var(--neon-purple-glow),
-      inset 0 0 12px rgba(128, 0, 255, 0.1);
-  backdrop-filter: var(--blur-light);
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
+  
+  transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
   min-height: 75px;
 }
 
-/* Efeito de energia nos estados */
+
 .estado-unified-item::before {
   content: '';
   position: absolute;
@@ -2786,21 +1941,13 @@ body::after {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, 
-      transparent, 
-      rgba(128, 0, 255, 0.3), 
-      rgba(128, 0, 255, 0.5), 
-      rgba(128, 0, 255, 0.3), 
-      transparent);
-  transition: left 0.6s ease;
+  background: var(--bg-card);
+  transition: left 0.2s ease;
 }
 
 .estado-unified-item:hover {
   border-color: var(--neon-yellow);
-  box-shadow: 
-      0 0 30px var(--neon-yellow-glow),
-      0 0 40px var(--neon-yellow-shadow),
-      inset 0 0 20px rgba(255, 255, 0, 0.15);
+  box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
   transform: translateY(-2px) scale(1.01);
 }
 
@@ -2832,7 +1979,7 @@ body::after {
   position: relative;
 }
 
-/* Responsividade */
+
 @media (max-width: 768px) {
   .damage-stress-unified {
     flex-direction: column;
@@ -2874,7 +2021,7 @@ body::after {
     gap: 15px;
   }
   
-  /* Ajuste intermediário para stress em tablet */
+  
   .stress-unified-grid {
     gap: 15px;
     justify-content: center;
@@ -2896,7 +2043,7 @@ body::after {
     margin-left: 5px;
   }
   
-  /* Ajuste para 3 colunas de 2 blocos de estresse no mobile */
+  
   .stress-unified-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -2915,7 +2062,7 @@ body::after {
     justify-items: center;
   }
   
-  /* Ajuste para o bloco especial S */
+  
   .stress-unified-special {
     margin-top: 8px;
     display: flex;
@@ -2939,7 +2086,7 @@ body::after {
   }
 }
 
-/* Contenção de efeitos para evitar transpassar */
+
 .dice-box,
 .damage-box,
 .stress-box,
@@ -2952,9 +2099,13 @@ body::after {
     isolation: isolate;
 }
 
-/* Garantir que efeitos ::before e ::after não transpassem */
+
 *::before,
 *::after {
     max-width: 100%;
     max-height: 100%;
 }
+
+
+
+

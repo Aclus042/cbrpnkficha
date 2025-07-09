@@ -51,13 +51,49 @@ let character = {
     consequenciaSobrecarga: ''
 };
 
+// Cache de elementos DOM para melhor performance
+const domCache = {
+    atitudeStatus: null,
+    periciaStatus: null,
+    cargaStatus: null,
+    equipmentCheckboxes: null,
+    stressCheckboxes: null,
+    damageCheckboxes: null
+};
+
+// Função de debounce para otimizar performance
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Versões debounced das funções custosas
+const debouncedValidateAtitudes = debounce(validateAtitudes, 50);
+const debouncedValidatePericias = debounce(validatePericias, 50);
+const debouncedUpdateCargaStatus = debounce(updateCargaStatus, 100);
+
 // Inicialização
 document.addEventListener('DOMContentLoaded', function() {
+    // Cachear elementos DOM importantes
+    domCache.atitudeStatus = document.getElementById('atitude-status');
+    domCache.periciaStatus = document.getElementById('pericia-status');
+    domCache.cargaStatus = document.getElementById('carga-status');
+    domCache.equipmentCheckboxes = document.querySelectorAll('input[type="checkbox"][name^="equip-"]');
+    domCache.stressCheckboxes = document.querySelectorAll('input[name^="stress-"]');
+    domCache.damageCheckboxes = document.querySelectorAll('input[name^="dano-"]');
+    
     initializeTabs();
     initializeFormHandlers();
     initializeDiceBoxes();
     initializeValidation();
-    initializeEquipmentCategories(); // Inicializar categorias de equipamentos
+    initializeEquipmentCategories();
 });
 
 // Sistema de Navegação
@@ -80,64 +116,60 @@ function initializeTabs() {
     });
 }
 
-// Manipuladores de Formulário
+// Manipuladores de Formulário (otimizados)
 function initializeFormHandlers() {
     // Identidade
-    document.getElementById('apelido').addEventListener('input', (e) => {
-        character.apelido = e.target.value;
-    });
+    const apelido = document.getElementById('apelido');
+    const aparencia = document.getElementById('aparencia');
+    const esquema = document.getElementById('esquema');
+    const detalhesEsquema = document.getElementById('detalhes-esquema');
     
-    document.getElementById('aparencia').addEventListener('input', (e) => {
-        character.aparencia = e.target.value;
-    });
-    
-    document.getElementById('esquema').addEventListener('change', (e) => {
-        character.esquema = e.target.value;
-    });
-    
-    document.getElementById('detalhes-esquema').addEventListener('input', (e) => {
-        character.detalhesEsquema = e.target.value;
-    });
+    if (apelido) apelido.addEventListener('input', (e) => character.apelido = e.target.value);
+    if (aparencia) aparencia.addEventListener('input', (e) => character.aparencia = e.target.value);
+    if (esquema) esquema.addEventListener('change', (e) => character.esquema = e.target.value);
+    if (detalhesEsquema) detalhesEsquema.addEventListener('input', (e) => character.detalhesEsquema = e.target.value);
 
-    // Especializações
-    document.querySelectorAll('.especializacao-input').forEach(input => {
-        input.addEventListener('input', handleEspecializacaoChange);
+    // Especializações com event delegation
+    document.addEventListener('input', function(event) {
+        if (event.target.matches('.especializacao-input')) {
+            handleEspecializacaoChange(event);
+        }
     });
     
     // Carga
-    document.querySelectorAll('input[name="carga"]').forEach(radio => {
-        radio.addEventListener('change', (e) => {
-            character.carga = parseInt(e.target.value);
-            updateCargaStatus();
-        });
+    document.addEventListener('change', function(event) {
+        if (event.target.matches('input[name="carga"]')) {
+            character.carga = parseInt(event.target.value);
+            debouncedUpdateCargaStatus();
+        }
+        
+        // Equipamentos
+        if (event.target.matches('input[type="checkbox"][name^="equip-"]')) {
+            handleEquipmentChange(event);
+        }
+        
+        // Estresse
+        if (event.target.matches('input[name^="stress-"]')) {
+            handleStressChange();
+        }
+        
+        // Dano
+        if (event.target.matches('input[name^="dano-"]')) {
+            handleDamageChange();
+        }
+        
+        // Estados
+        if (event.target.id === 'exausta') {
+            character.exausta = event.target.checked;
+        }
+        
+        if (event.target.id === 'sobrecarregada') {
+            character.sobrecarregada = event.target.checked;
+        }
     });
     
     // Inicializar categorias de equipamentos
     initializeEquipmentCategories();
-    
-    // Equipamentos
-    document.querySelectorAll('input[type="checkbox"][name^="equip-"]').forEach(checkbox => {
-        checkbox.addEventListener('change', handleEquipmentChange);
-    });
-    
-    // Estresse
-    document.querySelectorAll('input[name^="stress-"]').forEach(checkbox => {
-        checkbox.addEventListener('change', handleStressChange);
-    });
-    
-    // Dano
-    document.querySelectorAll('input[name^="dano-"]').forEach(checkbox => {
-        checkbox.addEventListener('change', handleDamageChange);
-    });
-    
-    // Estados
-    document.getElementById('exausta')?.addEventListener('change', (e) => {
-        character.exausta = e.target.checked;
-    });
-    
-    document.getElementById('sobrecarregada')?.addEventListener('change', (e) => {
-        character.sobrecarregada = e.target.checked;
-    });
 }
 
 // Sistema de Caixas de Dados Interativas
@@ -168,27 +200,30 @@ function handleAtitudeDiceClick(event) {
         character.atitudes[atitude].bugado = !isBugado;
     } else {
         // Toggle this individual box
-        const isActive = box.classList.contains('active');
         box.classList.toggle('active');
         
-        // Recalcular o valor total baseado nas caixas ativas
-        const activeBoxes = document.querySelectorAll(`[data-atitude="${atitude}"][data-value]:not([data-value="bugado"]).active`);
+        // Calcular valor usando cache local para evitar querySelectorAll
         let totalValue = 0;
-        
-        activeBoxes.forEach(activeBox => {
-            totalValue += parseInt(activeBox.dataset.value);
-        });
+        const atitudeContainer = box.closest('.atitude-column') || box.closest('.atitude-item');
+        if (atitudeContainer) {
+            const activeBoxes = atitudeContainer.querySelectorAll(`[data-atitude="${atitude}"][data-value]:not([data-value="bugado"]).active`);
+            activeBoxes.forEach(activeBox => {
+                totalValue += parseInt(activeBox.dataset.value);
+            });
+        }
         
         character.atitudes[atitude].value = totalValue;
     }
     
-    validateAtitudes();
+    // Usar requestAnimationFrame para otimizar a validação
+    debouncedValidateAtitudes();
 }
 
 function handlePericiaDiceClick(event) {
     const box = event.target;
     const pericia = box.dataset.pericia;
     const value = box.dataset.value;
+    const periciaContainer = box.closest('.pericia-item') || box.closest('.pericia-column');
     
     if (value === 'bugado') {
         // Toggle bugado
@@ -196,13 +231,14 @@ function handlePericiaDiceClick(event) {
         box.classList.toggle('active');
         character.pericias[pericia].bugado = !isBugado;
     } else if (value === '3') {
-        // Botão de especialização - só pode ser clicado se já houver 2 pontos
-        const currentActiveBoxes = document.querySelectorAll(`[data-pericia="${pericia}"][data-value]:not([data-value="bugado"]):not([data-value="3"]).active`);
+        // Botão de especialização - verificar se já houver 2 pontos
         let currentValue = 0;
-        
-        currentActiveBoxes.forEach(activeBox => {
-            currentValue += parseInt(activeBox.dataset.value);
-        });
+        if (periciaContainer) {
+            const currentActiveBoxes = periciaContainer.querySelectorAll(`[data-pericia="${pericia}"][data-value]:not([data-value="bugado"]):not([data-value="3"]).active`);
+            currentActiveBoxes.forEach(activeBox => {
+                currentValue += parseInt(activeBox.dataset.value);
+            });
+        }
         
         // Só permite clicar na especialização se já houver pelo menos 2 pontos
         if (currentValue < 2 && !box.classList.contains('active')) {
@@ -210,30 +246,30 @@ function handlePericiaDiceClick(event) {
         }
         
         // Toggle this individual box
-        const isActive = box.classList.contains('active');
         box.classList.toggle('active');
         
-        // Recalcular o valor total baseado nas caixas ativas
-        const activeBoxes = document.querySelectorAll(`[data-pericia="${pericia}"][data-value]:not([data-value="bugado"]).active`);
+        // Recalcular o valor total usando container local
         let totalValue = 0;
-        
-        activeBoxes.forEach(activeBox => {
-            totalValue += parseInt(activeBox.dataset.value);
-        });
+        if (periciaContainer) {
+            const activeBoxes = periciaContainer.querySelectorAll(`[data-pericia="${pericia}"][data-value]:not([data-value="bugado"]).active`);
+            activeBoxes.forEach(activeBox => {
+                totalValue += parseInt(activeBox.dataset.value);
+            });
+        }
         
         character.pericias[pericia].value = totalValue;
     } else {
         // Toggle this individual box (pontos 1 e 2)
-        const isActive = box.classList.contains('active');
         box.classList.toggle('active');
         
-        // Recalcular o valor total baseado nas caixas ativas
-        const activeBoxes = document.querySelectorAll(`[data-pericia="${pericia}"][data-value]:not([data-value="bugado"]).active`);
+        // Recalcular o valor total usando container local
         let totalValue = 0;
-        
-        activeBoxes.forEach(activeBox => {
-            totalValue += parseInt(activeBox.dataset.value);
-        });
+        if (periciaContainer) {
+            const activeBoxes = periciaContainer.querySelectorAll(`[data-pericia="${pericia}"][data-value]:not([data-value="bugado"]).active`);
+            activeBoxes.forEach(activeBox => {
+                totalValue += parseInt(activeBox.dataset.value);
+            });
+        }
         
         // Limitar a 3 pontos máximo por perícia
         if (totalValue > 3) {
@@ -245,9 +281,11 @@ function handlePericiaDiceClick(event) {
         character.pericias[pericia].value = totalValue;
     }
     
-    // Atualizar visual dos botões de especialização baseado no estado atual
-    updateEspecializacaoButtons();
-    validatePericias();
+    // Usar requestAnimationFrame para otimizar atualizações
+    requestAnimationFrame(() => {
+        updateEspecializacaoButtons();
+        debouncedValidatePericias();
+    });
 }
 
 function validateAtitudes() {
@@ -256,7 +294,8 @@ function validateAtitudes() {
     const twoCount = values.filter(val => val === 2).length;
     const oneCount = values.filter(val => val === 1).length;
     
-    const status = document.getElementById('atitude-status');
+    const status = domCache.atitudeStatus;
+    if (!status) return; // Proteção se elemento não existir
     
     if (twoCount === 1 && oneCount === 2 && total === 4) {
         status.textContent = 'Distribuição correta!';
@@ -266,14 +305,16 @@ function validateAtitudes() {
         status.className = 'status-message invalid';
     }
     
-    updateDiceCalculatorOptions();
+    // Usar requestAnimationFrame para otimizar
+    requestAnimationFrame(() => updateDiceCalculatorOptions());
 }
 
 function validatePericias() {
     const values = Object.values(character.pericias).map(per => per.value);
     const total = values.reduce((sum, val) => sum + val, 0);
     
-    const status = document.getElementById('pericia-status');
+    const status = domCache.periciaStatus;
+    if (!status) return; // Proteção se elemento não existir
     
     if (total === 8) {
         status.textContent = 'Distribuição correta!';
@@ -286,17 +327,8 @@ function validatePericias() {
         status.className = 'status-message invalid';
     }
     
-    updateDiceCalculatorOptions();
-}
-
-// Validação de Atitudes (função legacy - removida)
-function handleAtitudeChange() {
-    // Função removida - agora usa handleAtitudeDiceClick
-}
-
-// Validação de Perícias (função legacy - removida)  
-function handlePericiaChange() {
-    // Função removida - agora usa handlePericiaDiceClick
+    // Usar requestAnimationFrame para otimizar
+    requestAnimationFrame(() => updateDiceCalculatorOptions());
 }
 
 // Especializações
@@ -355,25 +387,32 @@ function toggleCategoria(headerElement) {
     categoria.classList.toggle('collapsed');
 }
 
-// Função para atualizar contadores das categorias
+// Função para atualizar contadores das categorias (otimizada)
 function updateCategoriaCounter(categoria) {
-    const categoriaElement = document.querySelector(`[data-categoria="${categoria}"]`).closest('.categoria-equipamento');
+    const categoriaElement = document.querySelector(`[data-categoria="${categoria}"]`)?.closest('.categoria-equipamento');
+    if (!categoriaElement) return;
+    
     const selectedItems = categoriaElement.querySelectorAll('input[type="checkbox"]:checked');
     const counter = categoriaElement.querySelector('.categoria-counter');
     const totalItems = categoriaElement.querySelectorAll('input[type="checkbox"]').length;
     
     // Atualizar contador
-    counter.textContent = `(${selectedItems.length}/${totalItems})`;
+    if (counter) {
+        counter.textContent = `(${selectedItems.length}/${totalItems})`;
+    }
 }
 
-// Inicializar event listeners para equipamentos
+// Inicializar event listeners para equipamentos (otimizado com event delegation)
 function initializeEquipmentCategories() {
-    // Adicionar event listeners para todos os checkboxes de equipamentos
-    document.querySelectorAll('input[data-categoria]').forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            updateCategoriaCounter(this.dataset.categoria);
-            updateCargaStatus(); // Atualizar status de carga também
-        });
+    // Usar event delegation para evitar múltiplos listeners
+    const equipamentosContainer = document.querySelector('.equipamentos-grid') || document.body;
+    
+    equipamentosContainer.addEventListener('change', function(event) {
+        if (event.target.matches('input[data-categoria]')) {
+            const categoria = event.target.dataset.categoria;
+            updateCategoriaCounter(categoria);
+            debouncedUpdateCargaStatus(); // Usar versão debounced
+        }
     });
     
     // Inicializar estado das categorias (todas fechadas)
@@ -382,7 +421,8 @@ function initializeEquipmentCategories() {
     });
     
     // Atualizar contadores iniciais
-    ['armas', 'protecoes', 'maquinas', 'ferramentas', 'kits', 'carga'].forEach(categoria => {
+    const categorias = ['armas', 'protecoes', 'maquinas', 'ferramentas', 'kits', 'carga'];
+    categorias.forEach(categoria => {
         const firstCheckbox = document.querySelector(`[data-categoria="${categoria}"]`);
         if (firstCheckbox) {
             updateCategoriaCounter(categoria);
@@ -390,20 +430,23 @@ function initializeEquipmentCategories() {
     });
 }
 
-// Status da Carga
+// Status da Carga otimizado
 function updateCargaStatus() {
-    const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="equip-"]');
     let totalWeight = 0;
     
-    checkboxes.forEach(checkbox => {
-        if (checkbox.checked) {
-            const weight = parseInt(checkbox.dataset.weight) || 1;
-            totalWeight += weight;
-        }
-    });
+    // Usar cache de checkboxes para melhor performance
+    if (domCache.equipmentCheckboxes) {
+        domCache.equipmentCheckboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                const weight = parseInt(checkbox.dataset.weight) || 1;
+                totalWeight += weight;
+            }
+        });
+    }
     
     const maxCarga = character.carga;
-    const status = document.getElementById('carga-status');
+    const status = domCache.cargaStatus;
+    if (!status) return; // Proteção se elemento não existir
     
     if (totalWeight <= maxCarga) {
         status.textContent = `${totalWeight}/${maxCarga} pontos de carga`;
@@ -414,22 +457,29 @@ function updateCargaStatus() {
     }
 }
 
-// Estresse
+// Estresse otimizado
 function handleStressChange() {
-    const checkboxes = document.querySelectorAll('input[name^="stress-"]');
-    const specialStressChecked = document.querySelector('input[name="stress-special"]').checked;
+    if (!domCache.stressCheckboxes) return;
     
-    character.estresse = Array.from(checkboxes).map(cb => cb.checked);
+    const specialStressElement = document.querySelector('input[name="stress-special"]');
+    const specialStressChecked = specialStressElement ? specialStressElement.checked : false;
     
-    // Atualizar indicador de sobrecarregada baseado no bloco especial
-    updateStressIndicator(specialStressChecked);
+    character.estresse = Array.from(domCache.stressCheckboxes).map(cb => cb.checked);
+    
+    // Usar requestAnimationFrame para otimizar
+    requestAnimationFrame(() => updateStressIndicator(specialStressChecked));
 }
 
-// Dano
+// Dano otimizado
 function handleDamageChange() {
-    const danoLeve = document.querySelectorAll('input[name^="dano-leve"]:checked').length;
-    const danoModerado = document.querySelectorAll('input[name^="dano-moderado"]:checked').length;
-    const danoGrave = document.querySelector('input[name="dano-grave"]').checked;
+    // Usar cache ou consultas mais específicas
+    const danoLeveElements = document.querySelectorAll('input[name^="dano-leve"]:checked');
+    const danoModeradoElements = document.querySelectorAll('input[name^="dano-moderado"]:checked');
+    const danoGraveElement = document.querySelector('input[name="dano-grave"]');
+    
+    const danoLeve = danoLeveElements.length;
+    const danoModerado = danoModeradoElements.length;
+    const danoGrave = danoGraveElement ? danoGraveElement.checked : false;
     
     // Atualizar estado do personagem
     character.dano = {
@@ -438,8 +488,8 @@ function handleDamageChange() {
         grave: danoGrave
     };
     
-    // Atualizar indicadores visuais
-    updateDamageIndicators(danoLeve, danoModerado, danoGrave);
+    // Usar requestAnimationFrame para otimizar
+    requestAnimationFrame(() => updateDamageIndicators(danoLeve, danoModerado, danoGrave));
 }
 
 // Atualizar indicador de estresse (sobrecarregada)
