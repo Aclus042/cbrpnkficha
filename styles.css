@@ -678,10 +678,10 @@ body {
 }
 
 .dice-box.active {
-    background: var(--gradient-green);
+    background: var(--neon-green);
     color: var(--bg-primary);
     border-color: var(--neon-green-bright);
-    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
+    box-shadow: 0 0 15px var(--neon-green-glow);
     text-shadow: none;
     transform: scale(1.1);
 }
@@ -704,18 +704,18 @@ body {
 }
 
 .dice-box.bugado.active {
-    background: var(--gradient-pink);
+    background: var(--neon-pink);
     color: var(--bg-primary);
     border-color: var(--neon-pink-bright);
-    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
+    box-shadow: 0 0 15px var(--neon-pink-glow);
 }
 
 
 .dice-box.smaller.active {
-    background: var(--gradient-yellow);
+    background: var(--neon-yellow);
     color: var(--bg-primary);
     border-color: var(--neon-yellow-bright);
-    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
+    box-shadow: 0 0 15px var(--neon-yellow-glow);
 }
 
 
@@ -1358,10 +1358,10 @@ input[name^="dano-leve"] + .damage-box:hover {
 }
 
 input[name^="dano-leve"]:checked + .damage-box {
-    background: var(--gradient-yellow);
+    background: var(--damage-light);
     border-color: var(--neon-yellow-bright);
     color: var(--bg-primary);
-    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
+    box-shadow: 0 0 15px var(--neon-yellow-glow);
     text-shadow: none;
 }
 
@@ -1378,10 +1378,10 @@ input[name^="dano-moderado"] + .damage-box:hover {
 }
 
 input[name^="dano-moderado"]:checked + .damage-box {
-    background: var(--gradient-orange);
+    background: var(--damage-moderate);
     border-color: var(--neon-orange-bright);
     color: var(--bg-primary);
-    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
+    box-shadow: 0 0 15px var(--neon-orange-glow);
     text-shadow: none;
 }
 
@@ -1398,11 +1398,11 @@ input[name="dano-grave"] + .damage-box:hover {
 }
 
 input[name="dano-grave"]:checked + .damage-box {
-    background: var(--gradient-red);
+    background: var(--damage-severe);
     border-color: var(--neon-red-bright);
-    color: var(--text-primary);
-    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    color: var(--bg-primary);
+    box-shadow: 0 0 15px var(--neon-red-glow);
+    text-shadow: none;
 }
 
 
@@ -1419,10 +1419,10 @@ input[name^="stress-"]:not([name="stress-special"]) + .stress-box:hover {
 }
 
 input[name^="stress-"]:not([name="stress-special"]):checked + .stress-box {
-    background: var(--gradient-cyan);
+    background: var(--stress-normal);
     border-color: var(--neon-cyan-bright);
     color: var(--bg-primary);
-    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
+    box-shadow: 0 0 15px var(--neon-cyan-glow);
     text-shadow: none;
 }
 
@@ -1442,10 +1442,10 @@ input[name^="stress-"]:not([name="stress-special"]):checked + .stress-box {
 }
 
 input[type="checkbox"]:checked + .stress-box.special {
-    background: var(--gradient-pink);
+    background: var(--stress-special);
     border-color: var(--neon-pink-bright);
     color: var(--bg-primary);
-    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
+    box-shadow: 0 0 15px var(--neon-pink-glow);
     text-shadow: none;
 }
 
@@ -1683,15 +1683,15 @@ input[type="checkbox"]:checked + .stress-box.special {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--gradient-cyan);
+    background: var(--neon-cyan);
     border-radius: 6px;
     border: 2px solid var(--bg-primary);
-    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
+    box-shadow: 0 0 15px var(--neon-cyan-glow);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--gradient-green);
-    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
+    background: var(--neon-green);
+    box-shadow: 0 0 15px var(--neon-green-glow);
 }
 
 ::-webkit-scrollbar-corner {
