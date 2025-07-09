@@ -167,9 +167,6 @@ function initializeFormHandlers() {
             character.sobrecarregada = event.target.checked;
         }
     });
-    
-    // Inicializar categorias de equipamentos
-    initializeEquipmentCategories();
 }
 
 // Sistema de Caixas de Dados Interativas
@@ -402,12 +399,17 @@ function updateCategoriaCounter(categoria) {
     }
 }
 
+// Flag para evitar múltiplas inicializações
+let equipmentCategoriesInitialized = false;
+
 // Inicializar event listeners para equipamentos (otimizado com event delegation)
 function initializeEquipmentCategories() {
-    // Usar event delegation para evitar múltiplos listeners
-    const equipamentosContainer = document.querySelector('.equipamentos-grid') || document.body;
+    if (equipmentCategoriesInitialized) {
+        return;
+    }
     
-    equipamentosContainer.addEventListener('change', function(event) {
+    // Usar event delegation no body para capturar todos os checkboxes de equipamentos
+    document.body.addEventListener('change', function(event) {
         if (event.target.matches('input[data-categoria]')) {
             const categoria = event.target.dataset.categoria;
             updateCategoriaCounter(categoria);
@@ -423,11 +425,10 @@ function initializeEquipmentCategories() {
     // Atualizar contadores iniciais
     const categorias = ['armas', 'protecoes', 'maquinas', 'ferramentas', 'kits', 'carga'];
     categorias.forEach(categoria => {
-        const firstCheckbox = document.querySelector(`[data-categoria="${categoria}"]`);
-        if (firstCheckbox) {
-            updateCategoriaCounter(categoria);
-        }
+        updateCategoriaCounter(categoria);
     });
+    
+    equipmentCategoriesInitialized = true;
 }
 
 // Status da Carga otimizado
