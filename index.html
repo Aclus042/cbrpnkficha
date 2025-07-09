@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBR+PNK - Ficha de Personagem</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <h1 class="navbar-title">CBR+PNK</h1>
+        </div>
+        <div class="navbar-menu">
+            <button class="nav-btn active" data-tab="identidade">Identidade</button>
+            <button class="nav-btn" data-tab="atributos">Básicas</button>
+            <button class="nav-btn" data-tab="equipamentos">Equipamentos</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Indicadores de Dano Flutuantes -->
+        <div id="damage-indicators" class="damage-indicators">
+            <div id="indicator-leve" class="damage-indicator" style="display: none;">
+                <span class="indicator-icon">▽E</span>
+            </div>
+            <div id="indicator-moderado" class="damage-indicator" style="display: none;">
+                <span class="indicator-icon">-1d</span>
+            </div>
+            <div id="indicator-grave" class="damage-indicator" style="display: none;">
+                <span class="indicator-icon">EXAUSTA</span>
+            </div>
+            <div id="indicator-sobrecarregada" class="damage-indicator" style="display: none;">
+                <span class="indicator-icon">SOBRECARREGADA</span>
+            </div>
+        </div>
+
+        <div id="identidade" class="tab-content active">
+            <h2>Identidade da Personagem</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="apelido">Apelido:</label>
+                    <input type="text" id="apelido" name="apelido">
+                </div>
+                <div class="form-group">
+                    <label for="esquema">Esquema:</label>
+                    <select id="esquema" name="esquema">
+                        <option value="">Selecione um esquema...</option>
+                        <option value="cair-fora">Cair fora</option>
+                        <option value="alguem-vai-pagar">Alguém vai pagar</option>
+                        <option value="proteger-alguem">Proteger alguém</option>
+                        <option value="mudar-de-vida">Mudar de vida</option>
+                        <option value="descobrir-verdade">Descobrir a verdade</option>
+                        <option value="assumir-posicao">Assumir uma posição</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="aparencia">Aparência:</label>
+                    <textarea id="aparencia" name="aparencia" rows="15"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="detalhes-esquema">Detalhes do Esquema:</label>
+                    <textarea id="detalhes-esquema" name="detalhes-esquema" rows="15"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div id="atributos" class="tab-content">
+            <h2>Básicas</h2>
+            
+            <div class="atributos-container">
+                <div class="atitudes-column">
+                    <div class="section">
+                        <h3>Atitudes</h3>
+                        <div class="atitudes-grid">
+                            <div class="atitude-item">
+                                <label>Agressiva:</label>
+                                <div class="dice-boxes">
+                                    <div class="dice-box" data-value="1" data-atitude="agressiva" title="+">+</div>
+                                    <div class="dice-box" data-value="2" data-atitude="agressiva" title="++">+</div>
+                                    <div class="dice-box bugado" data-value="bugado" data-atitude="agressiva" title="BUGADO">B</div>
+                                </div>
+                            </div>
+                            <div class="atitude-item">
+                                <label>Sagaz:</label>
+                                <div class="dice-boxes">
+                                    <div class="dice-box" data-value="1" data-atitude="sagaz" title="+">+</div>
+                                    <div class="dice-box" data-value="2" data-atitude="sagaz" title="++">+</div>
+                                    <div class="dice-box bugado" data-value="bugado" data-atitude="sagaz" title="BUGADO">B</div>
+                                </div>
+                            </div>
+                            <div class="atitude-item">
+                                <label>Empática:</label>
+                                <div class="dice-boxes">
+                                    <div class="dice-box" data-value="1" data-atitude="empatica" title="+">+</div>
+                                    <div class="dice-box" data-value="2" data-atitude="empatica" title="++">+</div>
+                                    <div class="dice-box bugado" data-value="bugado" data-atitude="empatica" title="BUGADO">B</div>
+                                </div>
+                            </div>
+                            <div class="atitude-item">
+                                <label>Furtiva:</label>
+                                <div class="dice-boxes">
+                                    <div class="dice-box" data-value="1" data-atitude="furtiva" title="+">+</div>
+                                    <div class="dice-box" data-value="2" data-atitude="furtiva" title="++">+</div>
+                                    <div class="dice-box bugado" data-value="bugado" data-atitude="furtiva" title="BUGADO">B</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="status-column">
+                    <div class="section status-unified-section">
+                        <div class="status-unified-wrapper">
+                            <!-- Dano e Estresse lado a lado -->
+                            <div class="damage-stress-unified">
+                                <div class="damage-unified-block">
+                                    <h3>Dano</h3>
+                                    <div class="damage-unified-grid">
+                                        <div class="damage-unified-row">
+                                            <span class="damage-unified-label">Leve</span>
+                                            <label><input type="checkbox" name="dano-leve-1"><span class="damage-box"></span></label>
+                                            <label><input type="checkbox" name="dano-leve-2"><span class="damage-box"></span></label>
+                                        </div>
+                                        <div class="damage-unified-row">
+                                            <span class="damage-unified-label">Moderado</span>
+                                            <label><input type="checkbox" name="dano-moderado-1"><span class="damage-box"></span></label>
+                                            <label><input type="checkbox" name="dano-moderado-2"><span class="damage-box"></span></label>
+                                        </div>
+                                        <div class="damage-unified-row">
+                                            <span class="damage-unified-label">Grave</span>
+                                            <label><input type="checkbox" name="dano-grave"><span class="damage-box"></span></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="stress-unified-block">
+                                    <h3>Estresse</h3>
+                                    <div class="stress-unified-content">
+                                        <div class="stress-unified-grid">
+                                            <div class="stress-unified-col">
+                                                <label><input type="checkbox" name="stress-1"><span class="stress-box">*</span></label>
+                                                <label><input type="checkbox" name="stress-2"><span class="stress-box">*</span></label>
+                                            </div>
+                                            <div class="stress-unified-col">
+                                                <label><input type="checkbox" name="stress-3"><span class="stress-box">*</span></label>
+                                                <label><input type="checkbox" name="stress-4"><span class="stress-box">*</span></label>
+                                            </div>
+                                            <div class="stress-unified-col">
+                                                <label><input type="checkbox" name="stress-5"><span class="stress-box">*</span></label>
+                                                <label><input type="checkbox" name="stress-6"><span class="stress-box">*</span></label>
+                                            </div>
+                                        </div>
+                                        <div class="stress-unified-special">
+                                            <label><input type="checkbox" name="stress-special"><span class="stress-box special">S</span></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Estados embaixo -->
+                            <div class="estados-unified-section">
+                                <h3>Estados</h3>
+                                <div class="estados-unified-grid">
+                                    <div class="estado-unified-item">
+                                        <h4>EXAUSTA</h4>
+                                        <p>Só pode agir com Esforço ou Ajuda</p>
+                                    </div>
+                                    <div class="estado-unified-item">
+                                        <h4>SOBRECARREGADA</h4>
+                                        <p>Marque uma Atitude como BUGADA</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pericias-full-width">
+                <div class="section">
+                    <h3>Perícias</h3>
+                    <!-- Layout Desktop: 5 colunas de 2 perícias -->
+                    <div class="pericias-grid-full desktop-layout">
+                        <!-- Coluna 1 -->
+                        <div class="pericia-column">
+                            <div class="pericia-item">
+                                <label>Análise:</label>
+                                <div class="pericia-controls">
+                                    <div class="dice-boxes">
+                                        <div class="dice-box" data-value="1" data-pericia="analise" title="1 ponto">+</div>
+                                        <div class="dice-box" data-value="2" data-pericia="analise" title="2 pontos">+</div>
+                                        <div class="dice-box smaller" data-value="3" data-pericia="analise" title="3 pontos">E</div>
+                                        <div class="dice-box bugado" data-value="bugado" data-pericia="analise" title="BUGADO">B</div>
+                                    </div>
+                                    <input type="text" class="especializacao-input" placeholder="Especialização" data-pericia="analise">
+                                </div>
+                            </div>
+                            <div class="pericia-item">
+                                <label>Atletismo:</label>
+                                <div class="pericia-controls">
+                                    <div class="dice-boxes">
+                                        <div class="dice-box" data-value="1" data-pericia="atletismo" title="1 ponto">+</div>
+                                        <div class="dice-box" data-value="2" data-pericia="atletismo" title="2 pontos">+</div>
+                                        <div class="dice-box smaller" data-value="3" data-pericia="atletismo" title="3 pontos">E</div>
+                                        <div class="dice-box bugado" data-value="bugado" data-pericia="atletismo" title="BUGADO">B</div>
+                                    </div>
+                                    <input type="text" class="especializacao-input" placeholder="Especialização" data-pericia="atletismo">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Coluna 2 -->
+                        <div class="pericia-column">
+                            <div class="pericia-item">
+                                <label>Mano a mano:</label>
+                                <div class="pericia-controls">
+                                    <div class="dice-boxes">
+                                        <div class="dice-box" data-value="1" data-pericia="mano-a-mano" title="1 ponto">+</div>
+                                        <div class="dice-box" data-value="2" data-pericia="mano-a-mano" title="2 pontos">+</div>
+                                        <div class="dice-box smaller" data-value="3" data-pericia="mano-a-mano" title="3 pontos">E</div>
+                                        <div class="dice-box bugado" data-value="bugado" data-pericia="mano-a-mano" title="BUGADO">B</div>
+                                    </div>
+                                    <input type="text" class="especializacao-input" placeholder="Especialização" data-pericia="mano-a-mano">
+                                </div>
+                            </div>
+                            <div class="pericia-item">
+                                <label>Programação:</label>
+                                <div class="pericia-controls">
+                                    <div class="dice-boxes">
+                                        <div class="dice-box" data-value="1" data-pericia="programacao" title="1 ponto">+</div>
+                                        <div class="dice-box" data-value="2" data-pericia="programacao" title="2 pontos">+</div>
+                                        <div class="dice-box smaller" data-value="3" data-pericia="programacao" title="3 pontos">E</div>
+                                        <div class="dice-box bugado" data-value="bugado" data-pericia="programacao" title="BUGADO">B</div>
+                                    </div>
+                                    <input type="text" class="especializacao-input" placeholder="Especialização" data-pericia="programacao">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Coluna 3 -->
+                        <div class="pericia-column">
+                            <div class="pericia-item">
+                                <label>Influência:</label>
+                                <div class="pericia-controls">
+                                    <div class="dice-boxes">
+                                        <div class="dice-box" data-value="1" data-pericia="influencia" title="1 ponto">+</div>
+                                        <div class="dice-box" data-value="2" data-pericia="influencia" title="2 pontos">+</div>
+                                        <div class="dice-box smaller" data-value="3" data-pericia="influencia" title="3 pontos">E</div>
+                                        <div class="dice-box bugado" data-value="bugado" data-pericia="influencia" title="BUGADO">B</div>
+                                    </div>
+                                    <input type="text" class="especializacao-input" placeholder="Especialização" data-pericia="influencia">
+                                </div>
+                            </div>
+                            <div class="pericia-item">
+                                <label>Pilotagem:</label>
+                                <div class="pericia-controls">
+                                    <div class="dice-boxes">
+                                        <div class="dice-box" data-value="1" data-pericia="pilotagem" title="1 ponto">+</div>
+                                        <div class="dice-box" data-value="2" data-pericia="pilotagem" title="2 pontos">+</div>
+                                        <div class="dice-box smaller" data-value="3" data-pericia="pilotagem" title="3 pontos">E</div>
+                                        <div class="dice-box bugado" data-value="bugado" data-pericia="pilotagem" title="BUGADO">B</div>
+                                    </div>
+                                    <input type="text" class="especializacao-input" placeholder="Especialização" data-pericia="pilotagem">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Coluna 4 -->
+                        <div class="pericia-column">
+                            <div class="pericia-item">
+                                <label>Tiro:</label>
+                                <div class="pericia-controls">
+                                    <div class="dice-boxes">
+                                        <div class="dice-box" data-value="1" data-pericia="tiro" title="1 ponto">+</div>
+                                        <div class="dice-box" data-value="2" data-pericia="tiro" title="2 pontos">+</div>
+                                        <div class="dice-box smaller" data-value="3" data-pericia="tiro" title="3 pontos">E</div>
+                                        <div class="dice-box bugado" data-value="bugado" data-pericia="tiro" title="BUGADO">B</div>
+                                    </div>
+                                    <input type="text" class="especializacao-input" placeholder="Especialização" data-pericia="tiro">
+                                </div>
+                            </div>
+                            <div class="pericia-item">
+                                <label>Gambiarra:</label>
+                                <div class="pericia-controls">
+                                    <div class="dice-boxes">
+                                        <div class="dice-box" data-value="1" data-pericia="gambiarra" title="1 ponto">+</div>
+                                        <div class="dice-box" data-value="2" data-pericia="gambiarra" title="2 pontos">+</div>
+                                        <div class="dice-box smaller" data-value="3" data-pericia="gambiarra" title="3 pontos">E</div>
+                                        <div class="dice-box bugado" data-value="bugado" data-pericia="gambiarra" title="BUGADO">B</div>
+                                    </div>
+                                    <input type="text" class="especializacao-input" placeholder="Especialização" data-pericia="gambiarra">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Coluna 5 -->
+                        <div class="pericia-column">
+                            <div class="pericia-item">
+                                <label>Ciências:</label>
+                                <div class="pericia-controls">
+                                    <div class="dice-boxes">
+                                        <div class="dice-box" data-value="1" data-pericia="ciencias" title="1 ponto">+</div>
+                                        <div class="dice-box" data-value="2" data-pericia="ciencias" title="2 pontos">+</div>
+                                        <div class="dice-box smaller" data-value="3" data-pericia="ciencias" title="3 pontos">E</div>
+                                        <div class="dice-box bugado" data-value="bugado" data-pericia="ciencias" title="BUGADO">B</div>
+                                    </div>
+                                    <input type="text" class="especializacao-input" placeholder="Especialização" data-pericia="ciencias">
+                                </div>
+                            </div>
+                            <div class="pericia-item">
+                                <label>Manha:</label>
+                                <div class="pericia-controls">
+                                    <div class="dice-boxes">
+                                        <div class="dice-box" data-value="1" data-pericia="manha" title="1 ponto">+</div>
+                                        <div class="dice-box" data-value="2" data-pericia="manha" title="2 pontos">+</div>
+                                        <div class="dice-box smaller" data-value="3" data-pericia="manha" title="3 pontos">E</div>
+                                        <div class="dice-box bugado" data-value="bugado" data-pericia="manha" title="BUGADO">B</div>
+                                    </div>
+                                    <input type="text" class="especializacao-input" placeholder="Especialização" data-pericia="manha">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Layout Mobile: 2 colunas de 5 perícias -->
+                    <div class="pericias-grid-full mobile-layout">
+                        <!-- Coluna 1 Mobile -->
+                        <div class="pericia-column">
+                            <div class="pericia-item">
+                                <label>Análise:</label>
+                                <div class="pericia-controls">
+                                    <div class="dice-boxes">
+                                        <div class="dice-box" data-value="1" data-pericia="analise" title="1 ponto">+</div>
+                                        <div class="dice-box" data-value="2" data-pericia="analise" title="2 pontos">+</div>
+                                        <div class="dice-box smaller" data-value="3" data-pericia="analise" title="3 pontos">E</div>
+                                        <div class="dice-box bugado" data-value="bugado" data-pericia="analise" title="BUGADO">B</div>
+                                    </div>
+                                    <input type="text" class="especializacao-input" placeholder="Especialização" data-pericia="analise">
+                                </div>
+                            </div>
+                            <div class="pericia-item">
+                                <label>Atletismo:</label>
+                                <div class="pericia-controls">
+                                    <div class="dice-boxes">
+                                        <div class="dice-box" data-value="1" data-pericia="atletismo" title="1 ponto">+</div>
+                                        <div class="dice-box" data-value="2" data-pericia="atletismo" title="2 pontos">+</div>
+                                        <div class="dice-box smaller" data-value="3" data-pericia="atletismo" title="3 pontos">E</div>
+                                        <div class="dice-box bugado" data-value="bugado" data-pericia="atletismo" title="BUGADO">B</div>
+                                    </div>
+                                    <input type="text" class="especializacao-input" placeholder="Especialização" data-pericia="atletismo">
+                                </div>
+                            </div>
+                            <div class="pericia-item">
+                                <label>Mano a mano:</label>
+                                <div class="pericia-controls">
+                                    <div class="dice-boxes">
+                                        <div class="dice-box" data-value="1" data-pericia="mano-a-mano" title="1 ponto">+</div>
+                                        <div class="dice-box" data-value="2" data-pericia="mano-a-mano" title="2 pontos">+</div>
+                                        <div class="dice-box smaller" data-value="3" data-pericia="mano-a-mano" title="3 pontos">E</div>
+                                        <div class="dice-box bugado" data-value="bugado" data-pericia="mano-a-mano" title="BUGADO">B</div>
+                                    </div>
+                                    <input type="text" class="especializacao-input" placeholder="Especialização" data-pericia="mano-a-mano">
+                                </div>
+                            </div>
+                            <div class="pericia-item">
+                                <label>Programação:</label>
+                                <div class="pericia-controls">
+                                    <div class="dice-boxes">
+                                        <div class="dice-box" data-value="1" data-pericia="programacao" title="1 ponto">+</div>
+                                        <div class="dice-box" data-value="2" data-pericia="programacao" title="2 pontos">+</div>
+                                        <div class="dice-box smaller" data-value="3" data-pericia="programacao" title="3 pontos">E</div>
+                                        <div class="dice-box bugado" data-value="bugado" data-pericia="programacao" title="BUGADO">B</div>
+                                    </div>
+                                    <input type="text" class="especializacao-input" placeholder="Especialização" data-pericia="programacao">
+                                </div>
+                            </div>
+                            <div class="pericia-item">
+                                <label>Influência:</label>
+                                <div class="pericia-controls">
+                                    <div class="dice-boxes">
+                                        <div class="dice-box" data-value="1" data-pericia="influencia" title="1 ponto">+</div>
+                                        <div class="dice-box" data-value="2" data-pericia="influencia" title="2 pontos">+</div>
+                                        <div class="dice-box smaller" data-value="3" data-pericia="influencia" title="3 pontos">E</div>
+                                        <div class="dice-box bugado" data-value="bugado" data-pericia="influencia" title="BUGADO">B</div>
+                                    </div>
+                                    <input type="text" class="especializacao-input" placeholder="Especialização" data-pericia="influencia">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Coluna 2 Mobile -->
+                        <div class="pericia-column">
+                            <div class="pericia-item">
+                                <label>Pilotagem:</label>
+                                <div class="pericia-controls">
+                                    <div class="dice-boxes">
+                                        <div class="dice-box" data-value="1" data-pericia="pilotagem" title="1 ponto">+</div>
+                                        <div class="dice-box" data-value="2" data-pericia="pilotagem" title="2 pontos">+</div>
+                                        <div class="dice-box smaller" data-value="3" data-pericia="pilotagem" title="3 pontos">E</div>
+                                        <div class="dice-box bugado" data-value="bugado" data-pericia="pilotagem" title="BUGADO">B</div>
+                                    </div>
+                                    <input type="text" class="especializacao-input" placeholder="Especialização" data-pericia="pilotagem">
+                                </div>
+                            </div>
+                            <div class="pericia-item">
+                                <label>Tiro:</label>
+                                <div class="pericia-controls">
+                                    <div class="dice-boxes">
+                                        <div class="dice-box" data-value="1" data-pericia="tiro" title="1 ponto">+</div>
+                                        <div class="dice-box" data-value="2" data-pericia="tiro" title="2 pontos">+</div>
+                                        <div class="dice-box smaller" data-value="3" data-pericia="tiro" title="3 pontos">E</div>
+                                        <div class="dice-box bugado" data-value="bugado" data-pericia="tiro" title="BUGADO">B</div>
+                                    </div>
+                                    <input type="text" class="especializacao-input" placeholder="Especialização" data-pericia="tiro">
+                                </div>
+                            </div>
+                            <div class="pericia-item">
+                                <label>Gambiarra:</label>
+                                <div class="pericia-controls">
+                                    <div class="dice-boxes">
+                                        <div class="dice-box" data-value="1" data-pericia="gambiarra" title="1 ponto">+</div>
+                                        <div class="dice-box" data-value="2" data-pericia="gambiarra" title="2 pontos">+</div>
+                                        <div class="dice-box smaller" data-value="3" data-pericia="gambiarra" title="3 pontos">E</div>
+                                        <div class="dice-box bugado" data-value="bugado" data-pericia="gambiarra" title="BUGADO">B</div>
+                                    </div>
+                                    <input type="text" class="especializacao-input" placeholder="Especialização" data-pericia="gambiarra">
+                                </div>
+                            </div>
+                            <div class="pericia-item">
+                                <label>Ciências:</label>
+                                <div class="pericia-controls">
+                                    <div class="dice-boxes">
+                                        <div class="dice-box" data-value="1" data-pericia="ciencias" title="1 ponto">+</div>
+                                        <div class="dice-box" data-value="2" data-pericia="ciencias" title="2 pontos">+</div>
+                                        <div class="dice-box smaller" data-value="3" data-pericia="ciencias" title="3 pontos">E</div>
+                                        <div class="dice-box bugado" data-value="bugado" data-pericia="ciencias" title="BUGADO">B</div>
+                                    </div>
+                                    <input type="text" class="especializacao-input" placeholder="Especialização" data-pericia="ciencias">
+                                </div>
+                            </div>
+                            <div class="pericia-item">
+                                <label>Manha:</label>
+                                <div class="pericia-controls">
+                                    <div class="dice-boxes">
+                                        <div class="dice-box" data-value="1" data-pericia="manha" title="1 ponto">+</div>
+                                        <div class="dice-box" data-value="2" data-pericia="manha" title="2 pontos">+</div>
+                                        <div class="dice-box smaller" data-value="3" data-pericia="manha" title="3 pontos">E</div>
+                                        <div class="dice-box bugado" data-value="bugado" data-pericia="manha" title="BUGADO">B</div>
+                                    </div>
+                                    <input type="text" class="especializacao-input" placeholder="Especialização" data-pericia="manha">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="equipamentos" class="tab-content">
+            <h2>Equipamentos</h2>
+            
+            <div class="equipamentos-top-grid">
+                <div class="section carga-section">
+                    <h3>Carga</h3>
+                    <div class="carga-options-vertical">
+                        <label>
+                            <input type="radio" name="carga" value="3">
+                            <span>Leve (3)</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="carga" value="5" checked>
+                            <span>Média (5)</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="carga" value="7">
+                            <span>Pesada (7)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="section ampliacoes-equipamentos">
+                    <h3>Ampliações Corporais</h3>
+                    <div class="ampliacoes-grid-equipamentos">
+                        <div class="ampliacao-coluna">
+                            <div class="ampliacao-item-eq">
+                                <div class="form-group">
+                                    <label>Nome/Modelo:</label>
+                                    <input type="text" name="ampliacao-nome-eq-1" placeholder="Ex: Olhos Zeiss mk3">
+                                </div>
+                                <div class="form-group">
+                                    <label>Descrição:</label>
+                                    <textarea name="ampliacao-efeito-eq-1" placeholder="Breve descrição" rows="2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ampliacao-coluna">
+                            <div class="ampliacao-item-eq">
+                                <div class="form-group">
+                                    <label>Nome/Modelo:</label>
+                                    <input type="text" name="ampliacao-nome-eq-2" placeholder="Ex: Braço Militech">
+                                </div>
+                                <div class="form-group">
+                                    <label>Descrição:</label>
+                                    <textarea name="ampliacao-efeito-eq-2" placeholder="Breve descrição" rows="2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ampliacao-coluna">
+                            <div class="ampliacao-item-eq">
+                                <div class="form-group">
+                                    <label>Nome/Modelo:</label>
+                                    <input type="text" name="ampliacao-nome-eq-3" placeholder="Ex: Interface Neural">
+                                </div>
+                                <div class="form-group">
+                                    <label>Descrição:</label>
+                                    <textarea name="ampliacao-efeito-eq-3" placeholder="Breve descrição" rows="2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Lista de Equipamentos</h3>
+                <div class="equipamentos-categorias">
+                    <!-- Armas -->
+                    <div class="categoria-equipamento">
+                        <div class="categoria-header" onclick="toggleCategoria(this)">
+                            <h4>Armas <span class="categoria-counter">(0/6)</span></h4>
+                            <span class="categoria-arrow">▼</span>
+                        </div>
+                        <div class="categoria-content">
+                            <div class="equipamentos-grid">
+                                <label class="equipment-item">
+                                    <input type="checkbox" name="equip-lamina" data-weight="1" data-categoria="armas">
+                                    <span>Lâmina ou duas <small>(1)</small></span>
+                                </label>
+                                <label class="equipment-item">
+                                    <input type="checkbox" name="equip-arma-sobressalente" data-weight="1" data-categoria="armas">
+                                    <span>Arma sobressalente <small>(1)</small></span>
+                                </label>
+                                <label class="equipment-item">
+                                    <input type="checkbox" name="equip-submetralhadora" data-weight="1" data-categoria="armas">
+                                    <span>Submetralhadora <small>(1)</small></span>
+                                </label>
+                                <label class="equipment-item">
+                                    <input type="checkbox" name="equip-arma-pesada" data-weight="2" data-categoria="armas">
+                                    <span>Arma pesada <small>(2)</small></span>
+                                </label>
+                                <label class="equipment-item">
+                                    <input type="checkbox" name="equip-granadas" data-weight="1" data-categoria="armas">
+                                    <span>Granadas <small>(1)</small></span>
+                                </label>
+                                <label class="equipment-item">
+                                    <input type="checkbox" name="equip-municoes" data-weight="1" data-categoria="armas">
+                                    <span>Munições <small>(1)</small></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Proteções -->
+                    <div class="categoria-equipamento">
+                        <div class="categoria-header" onclick="toggleCategoria(this)">
+                            <h4>Proteções <span class="categoria-counter">(0/2)</span></h4>
+                            <span class="categoria-arrow">▼</span>
+                        </div>
+                        <div class="categoria-content">
+                            <div class="equipamentos-grid">
+                                <label class="equipment-item">
+                                    <input type="checkbox" name="equip-armadura-leve" data-weight="1" data-categoria="protecoes">
+                                    <span>Armadura leve <small>(1)</small></span>
+                                </label>
+                                <label class="equipment-item">
+                                    <input type="checkbox" name="equip-armadura-pesada" data-weight="2" data-categoria="protecoes">
+                                    <span>Armadura pesada <small>(2)</small></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Máquinas -->
+                    <div class="categoria-equipamento">
+                        <div class="categoria-header" onclick="toggleCategoria(this)">
+                            <h4>Máquinas <span class="categoria-counter">(0/4)</span></h4>
+                            <span class="categoria-arrow">▼</span>
+                        </div>
+                        <div class="categoria-content">
+                            <div class="equipamentos-grid">
+                                <label class="equipment-item">
+                                    <input type="checkbox" name="equip-rastreio" data-weight="1" data-categoria="maquinas">
+                                    <span>Dispositivo de rastreio <small>(1)</small></span>
+                                </label>
+                                <label class="equipment-item">
+                                    <input type="checkbox" name="equip-cyberdeck" data-weight="1" data-categoria="maquinas">
+                                    <span>Cyberdeck <small>(1)</small></span>
+                                </label>
+                                <label class="equipment-item">
+                                    <input type="checkbox" name="equip-drone-pequeno" data-weight="1" data-categoria="maquinas">
+                                    <span>Drone pequeno <small>(1)</small></span>
+                                </label>
+                                <label class="equipment-item">
+                                    <input type="checkbox" name="equip-drone-medio" data-weight="2" data-categoria="maquinas">
+                                    <span>Drone médio <small>(2)</small></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ferramentas -->
+                    <div class="categoria-equipamento">
+                        <div class="categoria-header" onclick="toggleCategoria(this)">
+                            <h4>Ferramentas <span class="categoria-counter">(0/4)</span></h4>
+                            <span class="categoria-arrow">▼</span>
+                        </div>
+                        <div class="categoria-content">
+                            <div class="equipamentos-grid">
+                                <label class="equipment-item">
+                                    <input type="checkbox" name="equip-ferramentas" data-weight="2" data-categoria="ferramentas">
+                                    <span>Ferramenta de demolição <small>(2)</small></span>
+                                </label>
+                                <label class="equipment-item">
+                                    <input type="checkbox" name="equip-ferramentas-microtronicas" data-weight="1" data-categoria="ferramentas">
+                                    <span>Ferram. microtrônicas <small>(1)</small></span>
+                                </label>
+                                <label class="equipment-item">
+                                    <input type="checkbox" name="equip-pecas-reposicao" data-weight="1" data-categoria="ferramentas">
+                                    <span>Peças de reposição <small>(1)</small></span>
+                                </label>
+                                <label class="equipment-item">
+                                    <input type="checkbox" name="equip-bateria" data-weight="1" data-categoria="ferramentas">
+                                    <span>Bateria extra <small>(1)</small></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kits -->
+                    <div class="categoria-equipamento">
+                        <div class="categoria-header" onclick="toggleCategoria(this)">
+                            <h4>Kits <span class="categoria-counter">(0/4)</span></h4>
+                            <span class="categoria-arrow">▼</span>
+                        </div>
+                        <div class="categoria-content">
+                            <div class="equipamentos-grid">
+                                <label class="equipment-item">
+                                    <input type="checkbox" name="equip-kit-medico" data-weight="1" data-categoria="kits">
+                                    <span>Kit médico <small>(1)</small></span>
+                                </label>
+                                <label class="equipment-item">
+                                    <input type="checkbox" name="equip-sobrevivencia" data-weight="1" data-categoria="kits">
+                                    <span>Kit de sobrevivência <small>(1)</small></span>
+                                </label>
+                                <label class="equipment-item">
+                                    <input type="checkbox" name="equip-disfarce" data-weight="1" data-categoria="kits">
+                                    <span>Disfarce ou camuflagem <small>(1)</small></span>
+                                </label>
+                                <label class="equipment-item">
+                                    <input type="checkbox" name="equip-infiltracao" data-weight="1" data-categoria="kits">
+                                    <span>Equip. de infiltração <small>(1)</small></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Carga Adicional -->
+                    <div class="categoria-equipamento">
+                        <div class="categoria-header" onclick="toggleCategoria(this)">
+                            <h4>Carga Adicional <span class="categoria-counter">(0/4)</span></h4>
+                            <span class="categoria-arrow">▼</span>
+                        </div>
+                        <div class="categoria-content">
+                            <div class="equipamentos-grid">
+                                <label class="equipment-item">
+                                    <input type="checkbox" name="equip-carga-adicional-1" data-weight="1" data-categoria="carga">
+                                    <span>Carga adicional 1 <small>(1)</small></span>
+                                </label>
+                                <label class="equipment-item">
+                                    <input type="checkbox" name="equip-carga-adicional-2" data-weight="1" data-categoria="carga">
+                                    <span>Carga adicional 2 <small>(1)</small></span>
+                                </label>
+                                <label class="equipment-item">
+                                    <input type="checkbox" name="equip-carga-adicional-3" data-weight="1" data-categoria="carga">
+                                    <span>Carga adicional 3 <small>(1)</small></span>
+                                </label>
+                                <label class="equipment-item">
+                                    <input type="checkbox" name="equip-carga-adicional-4" data-weight="1" data-categoria="carga">
+                                    <span>Carga adicional 4 <small>(1)</small></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
