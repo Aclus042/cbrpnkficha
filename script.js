@@ -94,6 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeDiceBoxes();
     initializeValidation();
     initializeEquipmentCategories();
+    initializeSaveLoad();
 });
 
 // Sistema de Navegação
@@ -848,7 +849,444 @@ function populateForm() {
     }, 100);
 }
 
-// Funções de exportação/importação foram removidas na refatoração
+// Sistema de Salvar/Carregar Ficha
+function coletarDadosFicha() {
+    const dadosFicha = {
+        // Metadados
+        versao: "1.0",
+        dataExportacao: new Date().toISOString(),
+        
+        // Identidade
+        apelido: document.getElementById('apelido')?.value || '',
+        aparencia: document.getElementById('aparencia')?.value || '',
+        esquema: document.getElementById('esquema')?.value || '',
+        detalhesEsquema: document.getElementById('detalhes-esquema')?.value || '',
+        
+        // Atitudes
+        atitudes: {},
+        
+        // Perícias
+        pericias: {},
+        especializacoes: {},
+        
+        // Ampliações
+        ampliacoes: [],
+        
+        // Equipamentos
+        carga: parseInt(document.querySelector('input[name="carga"]:checked')?.value) || 5,
+        equipamentos: {},
+        
+        // Dano e Estresse
+        dano: {
+            leve: 0,
+            moderado: 0,
+            grave: false
+        },
+        estresse: [],
+        // Estados (controles automáticos baseados em dano/estresse)
+        estados: {
+            exausta: false, // Será controlado automaticamente pelo dano grave
+            sobrecarregada: false, // Será controlado automaticamente pelo estresse especial
+            atitudeBugada: '', // Campo de texto para qual atitude está bugada
+            consequenciaSobrecarga: '' // Campo de texto para consequência
+        }
+    };
+    
+    // Coletar atitudes
+    ['agressiva', 'sagaz', 'empatica', 'furtiva'].forEach(atitude => {
+        const diceBoxes = document.querySelectorAll(`[data-atitude="${atitude}"]`);
+        let value = 0;
+        let bugado = false;
+        
+        diceBoxes.forEach(box => {
+            if (box.classList.contains('active')) {
+                if (box.classList.contains('bugado')) {
+                    bugado = true;
+                }
+                value++;
+            }
+        });
+        
+        dadosFicha.atitudes[atitude] = { value, bugado };
+    });
+    
+    // Coletar perícias
+    const pericias = ['analise', 'atletismo', 'mano-a-mano', 'programacao', 'influencia', 
+                     'pilotagem', 'tiro', 'gambiarra', 'ciencias', 'manha'];
+    
+    pericias.forEach(pericia => {
+        const diceBoxes = document.querySelectorAll(`[data-pericia="${pericia}"]`);
+        let value = 0;
+        let bugado = false;
+        
+        diceBoxes.forEach(box => {
+            if (box.classList.contains('active')) {
+                if (box.classList.contains('bugado')) {
+                    bugado = true;
+                }
+                value++;
+            }
+        });
+        
+        dadosFicha.pericias[pericia] = { value, bugado };
+        
+        // Verificar especialização
+        const especInput = document.querySelector(`input[data-especializacao="${pericia}"]`);
+        if (especInput?.value) {
+            dadosFicha.especializacoes[pericia] = especInput.value;
+        }
+    });
+    
+    // Coletar ampliações
+    document.querySelectorAll('.ampliacoes-grid-equipamentos .ampliacao-item-eq').forEach((item, index) => {
+        const nome = item.querySelector(`input[name^="ampliacao-nome-eq"]`)?.value || '';
+        const efeito = item.querySelector(`textarea[name^="ampliacao-efeito-eq"]`)?.value || '';
+        const integrada = item.querySelector(`input[type="checkbox"]`)?.checked || false;
+        
+        if (nome || efeito) {
+            dadosFicha.ampliacoes.push({ nome, efeito, integrada });
+        }
+    });
+    
+    // Coletar equipamentos
+    document.querySelectorAll('input[data-categoria]').forEach(checkbox => {
+        if (checkbox.checked) {
+            const categoria = checkbox.dataset.categoria;
+            const nome = checkbox.name.replace('equip-', '');
+            const weight = parseInt(checkbox.dataset.weight) || 1;
+            
+            if (!dadosFicha.equipamentos[categoria]) {
+                dadosFicha.equipamentos[categoria] = [];
+            }
+            dadosFicha.equipamentos[categoria].push({ nome, weight });
+        }
+    });
+    
+    // Coletar dano
+    const danoLeve = document.querySelectorAll('input[name^="dano-leve"]:checked').length;
+    const danoModerado = document.querySelectorAll('input[name^="dano-moderado"]:checked').length;
+    const danoGrave = document.querySelector('input[name="dano-grave"]')?.checked || false;
+    
+    dadosFicha.dano = {
+        leve: danoLeve,
+        moderado: danoModerado,
+        grave: danoGrave
+    };
+    
+    // Coletar estresse
+    const estresseNormal = [];
+    document.querySelectorAll('input[name^="stress-"]:not([name="stress-special"]):checked').forEach(checkbox => {
+        estresseNormal.push(checkbox.name);
+    });
+    
+    const estresseEspecial = document.querySelector('input[name="stress-special"]')?.checked || false;
+    
+    dadosFicha.estresse = {
+        normal: estresseNormal,
+        especial: estresseEspecial
+    };
+    
+    return dadosFicha;
+}
+
+function aplicarDadosFicha(dadosFicha) {
+    try {
+        // Aplicar identidade
+        if (dadosFicha.apelido) document.getElementById('apelido').value = dadosFicha.apelido;
+        if (dadosFicha.aparencia) document.getElementById('aparencia').value = dadosFicha.aparencia;
+        if (dadosFicha.esquema) document.getElementById('esquema').value = dadosFicha.esquema;
+        if (dadosFicha.detalhesEsquema) document.getElementById('detalhes-esquema').value = dadosFicha.detalhesEsquema;
+        
+        // Limpar estados anteriores
+        document.querySelectorAll('.dice-box.active').forEach(box => box.classList.remove('active'));
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
+        
+        // Aplicar atitudes
+        if (dadosFicha.atitudes) {
+            Object.entries(dadosFicha.atitudes).forEach(([atitude, data]) => {
+                const diceBoxes = document.querySelectorAll(`[data-atitude="${atitude}"]`);
+                for (let i = 0; i < data.value && i < diceBoxes.length; i++) {
+                    const box = diceBoxes[i];
+                    box.classList.add('active');
+                    if (data.bugado && box.classList.contains('bugado')) {
+                        // Se é bugado, só marcar a caixa bugada
+                        diceBoxes.forEach(b => b.classList.remove('active'));
+                        box.classList.add('active');
+                        break;
+                    }
+                }
+            });
+        }
+        
+        // Aplicar perícias
+        if (dadosFicha.pericias) {
+            Object.entries(dadosFicha.pericias).forEach(([pericia, data]) => {
+                const diceBoxes = document.querySelectorAll(`[data-pericia="${pericia}"]`);
+                for (let i = 0; i < data.value && i < diceBoxes.length; i++) {
+                    const box = diceBoxes[i];
+                    box.classList.add('active');
+                    if (data.bugado && box.classList.contains('bugado')) {
+                        // Se é bugado, só marcar a caixa bugada
+                        diceBoxes.forEach(b => b.classList.remove('active'));
+                        box.classList.add('active');
+                        break;
+                    }
+                }
+            });
+        }
+        
+        // Aplicar especializações
+        if (dadosFicha.especializacoes) {
+            Object.entries(dadosFicha.especializacoes).forEach(([pericia, especializacao]) => {
+                const input = document.querySelector(`input[data-especializacao="${pericia}"]`);
+                if (input) input.value = especializacao;
+            });
+        }
+        
+        // Aplicar ampliações
+        if (dadosFicha.ampliacoes) {
+            const container = document.querySelector('.ampliacoes-grid-equipamentos');
+            if (container) {
+                dadosFicha.ampliacoes.forEach((ampliacao, index) => {
+                    const item = container.querySelectorAll('.ampliacao-item-eq')[Math.min(index, 2)]; // Máximo 3 ampliações
+                    if (item) {
+                        const nomeInput = item.querySelector('input[name^="ampliacao-nome-eq"]');
+                        const efeitoTextarea = item.querySelector('textarea[name^="ampliacao-efeito-eq"]');
+                        const integradaCheckbox = item.querySelector('input[type="checkbox"]');
+                        
+                        if (nomeInput) nomeInput.value = ampliacao.nome || '';
+                        if (efeitoTextarea) efeitoTextarea.value = ampliacao.efeito || '';
+                        if (integradaCheckbox) integradaCheckbox.checked = ampliacao.integrada || false;
+                    }
+                });
+            }
+        }
+        
+        // Aplicar carga
+        if (dadosFicha.carga) {
+            const cargaRadio = document.querySelector(`input[name="carga"][value="${dadosFicha.carga}"]`);
+            if (cargaRadio) cargaRadio.checked = true;
+        }
+        
+        // Aplicar equipamentos
+        if (dadosFicha.equipamentos) {
+            Object.entries(dadosFicha.equipamentos).forEach(([categoria, itens]) => {
+                itens.forEach(item => {
+                    const checkbox = document.querySelector(`input[name="equip-${item.nome}"]`);
+                    if (checkbox) checkbox.checked = true;
+                });
+            });
+        }
+        
+        // Aplicar dano
+        if (dadosFicha.dano) {
+            // Dano leve
+            for (let i = 1; i <= dadosFicha.dano.leve; i++) {
+                const checkbox = document.querySelector(`input[name="dano-leve-${i}"]`);
+                if (checkbox) checkbox.checked = true;
+            }
+            
+            // Dano moderado
+            for (let i = 1; i <= dadosFicha.dano.moderado; i++) {
+                const checkbox = document.querySelector(`input[name="dano-moderado-${i}"]`);
+                if (checkbox) checkbox.checked = true;
+            }
+            
+            // Dano grave
+            if (dadosFicha.dano.grave) {
+                const checkbox = document.querySelector('input[name="dano-grave"]');
+                if (checkbox) checkbox.checked = true;
+            }
+        }
+        
+        // Aplicar estresse
+        if (dadosFicha.estresse) {
+            if (dadosFicha.estresse.normal) {
+                dadosFicha.estresse.normal.forEach(stressName => {
+                    const checkbox = document.querySelector(`input[name="${stressName}"]`);
+                    if (checkbox) checkbox.checked = true;
+                });
+            }
+            
+            if (dadosFicha.estresse.especial) {
+                const checkbox = document.querySelector('input[name="stress-special"]');
+                if (checkbox) checkbox.checked = true;
+            }
+        }
+        
+        // Aplicar estados (os estados são controlados automaticamente pelo dano/estresse)
+        // Não há controles manuais para exausta/sobrecarregada no HTML atual
+        
+        // Atualizar validações e contadores
+        debouncedValidateAtitudes();
+        debouncedValidatePericias();
+        debouncedUpdateCargaStatus();
+        
+        // Atualizar contadores de equipamentos
+        ['armas', 'protecoes', 'maquinas', 'ferramentas', 'kits', 'carga'].forEach(categoria => {
+            updateCategoriaCounter(categoria);
+        });
+        
+        // Mostrar mensagem de sucesso
+        mostrarNotificacao('Ficha carregada com sucesso!', 'success');
+        
+    } catch (error) {
+        console.error('Erro ao aplicar dados da ficha:', error);
+        mostrarNotificacao('Erro ao carregar a ficha. Verifique se o arquivo está correto.', 'error');
+    }
+}
+
+function salvarFicha() {
+    try {
+        const dadosFicha = coletarDadosFicha();
+        const nomePersonagem = dadosFicha.apelido || 'personagem';
+        const dataAtual = new Date().toISOString().split('T')[0];
+        const nomeArquivo = `${nomePersonagem}_${dataAtual}.json`;
+        
+        const blob = new Blob([JSON.stringify(dadosFicha, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = nomeArquivo;
+        link.style.display = 'none';
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        URL.revokeObjectURL(url);
+        
+        mostrarNotificacao(`Ficha salva como: ${nomeArquivo}`, 'success');
+        
+    } catch (error) {
+        console.error('Erro ao salvar ficha:', error);
+        mostrarNotificacao('Erro ao salvar a ficha.', 'error');
+    }
+}
+
+function carregarFicha() {
+    const fileInput = document.getElementById('file-input');
+    fileInput.click();
+}
+
+function mostrarNotificacao(mensagem, tipo = 'info') {
+    // Remover notificação anterior se existir
+    const notificacaoExistente = document.querySelector('.notificacao');
+    if (notificacaoExistente) {
+        notificacaoExistente.remove();
+    }
+    
+    const notificacao = document.createElement('div');
+    notificacao.className = `notificacao ${tipo}`;
+    notificacao.textContent = mensagem;
+    
+    // Estilos inline para a notificação
+    Object.assign(notificacao.style, {
+        position: 'fixed',
+        top: '90px',
+        right: '20px',
+        padding: '15px 20px',
+        borderRadius: '8px',
+        fontFamily: 'Orbitron, monospace',
+        fontWeight: '700',
+        fontSize: '14px',
+        zIndex: '10000',
+        maxWidth: '300px',
+        boxShadow: '0 4px 15px rgba(0, 0, 0, 0.3)',
+        animation: 'slideInRight 0.3s ease',
+        border: '2px solid',
+        textAlign: 'center'
+    });
+    
+    // Cores baseadas no tipo
+    if (tipo === 'success') {
+        notificacao.style.backgroundColor = 'rgba(102, 187, 106, 0.9)';
+        notificacao.style.borderColor = '#66bb6a';
+        notificacao.style.color = '#0f1419';
+    } else if (tipo === 'error') {
+        notificacao.style.backgroundColor = 'rgba(229, 115, 115, 0.9)';
+        notificacao.style.borderColor = '#e57373';
+        notificacao.style.color = '#0f1419';
+    } else {
+        notificacao.style.backgroundColor = 'rgba(77, 208, 225, 0.9)';
+        notificacao.style.borderColor = '#4dd0e1';
+        notificacao.style.color = '#0f1419';
+    }
+    
+    document.body.appendChild(notificacao);
+    
+    // Remover após 4 segundos
+    setTimeout(() => {
+        if (notificacao.parentNode) {
+            notificacao.style.animation = 'slideOutRight 0.3s ease';
+            setTimeout(() => notificacao.remove(), 300);
+        }
+    }, 4000);
+}
+
+// Inicializar sistema de salvar/carregar
+function initializeSaveLoad() {
+    const salvarBtn = document.getElementById('salvar-ficha');
+    const carregarBtn = document.getElementById('carregar-ficha');
+    const fileInput = document.getElementById('file-input');
+    
+    if (salvarBtn) {
+        salvarBtn.addEventListener('click', salvarFicha);
+    }
+    
+    if (carregarBtn) {
+        carregarBtn.addEventListener('click', carregarFicha);
+    }
+    
+    if (fileInput) {
+        fileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const dadosFicha = JSON.parse(e.target.result);
+                        aplicarDadosFicha(dadosFicha);
+                    } catch (error) {
+                        console.error('Erro ao ler arquivo:', error);
+                        mostrarNotificacao('Arquivo inválido. Selecione um arquivo JSON válido.', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            }
+            // Limpar o input para permitir recarregar o mesmo arquivo
+            event.target.value = '';
+        });
+    }
+}
+
+// Adicionar animações CSS para as notificações
+const notificationStyle = document.createElement('style');
+notificationStyle.textContent = `
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideOutRight {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(notificationStyle);
 
 // Adicionar estilos CSS para os indicadores de dano
 const style = document.createElement('style');
