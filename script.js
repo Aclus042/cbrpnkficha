@@ -346,19 +346,22 @@ function handleEspecializacaoChange() {
 function updateEspecializacaoButtons() {
     // Para cada perícia, verificar se pode usar especialização
     Object.keys(character.pericias).forEach(pericia => {
-        const especializacaoBox = document.querySelector(`[data-pericia="${pericia}"][data-value="3"]`);
+        // Padronizar nome para o formato com hífens
+        let nomePericia = pericia.replace(/([A-Z])/g, '-$1').toLowerCase().replace(/^-/, '');
+        if (pericia === 'mano-a-mano') nomePericia = 'mano-a-mano';
+        const especializacaoBox = document.querySelector(`[data-pericia="${nomePericia}"][data-value="3"]`);
         if (!especializacaoBox) return;
-        
         // Calcular pontos atuais excluindo a especialização
-        const activeBoxes = document.querySelectorAll(`[data-pericia="${pericia}"][data-value]:not([data-value="bugado"]):not([data-value="3"]).active`);
+        const activeBoxes = document.querySelectorAll(`[data-pericia="${nomePericia}"][data-value]:not([data-value="bugado"]):not([data-value="3"]).active`);
         let currentValue = 0;
-        
         activeBoxes.forEach(activeBox => {
             currentValue += parseInt(activeBox.dataset.value);
         });
-        
-        // Se tem menos de 2 pontos e não está ativa, desabilitar visualmente
-        if (currentValue < 2 && !especializacaoBox.classList.contains('active')) {
+        // Se o botão está ativo, nunca deve estar desabilitado
+        if (especializacaoBox.classList.contains('active')) {
+            especializacaoBox.classList.remove('disabled');
+            especializacaoBox.title = '3 pontos (Especialização)';
+        } else if (currentValue < 2) {
             especializacaoBox.classList.add('disabled');
             especializacaoBox.title = 'Precisa de pelo menos 2 pontos na perícia';
         } else {
@@ -717,45 +720,47 @@ function populateForm() {
     
     // Perícias - atualizar caixas de dados
     Object.entries(character.pericias).forEach(([nome, pericia]) => {
+        // Padronizar nome para o formato com hífens (ex: mano-a-mano)
+        let nomePericia = nome.replace(/([A-Z])/g, '-$1').toLowerCase().replace(/^-/, '');
+        // Exceção para nomes já corretos
+        if (nome === 'mano-a-mano') nomePericia = 'mano-a-mano';
         // Limpar todas as caixas desta perícia
-        document.querySelectorAll(`[data-pericia="${nome}"]`).forEach(box => {
+        document.querySelectorAll(`[data-pericia="${nomePericia}"]`).forEach(box => {
             box.classList.remove('active');
         });
-        
         // Ativar caixas baseado no valor total
         let remainingValue = pericia.value || 0;
-        
         // Ativar caixa de valor 3 primeiro (mais eficiente)
-        const box3 = document.querySelector(`[data-pericia="${nome}"][data-value="3"]`);
+        const box3 = document.querySelector(`[data-pericia="${nomePericia}"][data-value="3"]`);
         if (remainingValue >= 3 && box3) {
             box3.classList.add('active');
             remainingValue -= 3;
         }
-        
         // Ativar caixas de valor 2
-        const box2 = document.querySelector(`[data-pericia="${nome}"][data-value="2"]`);
+        const box2 = document.querySelector(`[data-pericia="${nomePericia}"][data-value="2"]`);
         if (remainingValue >= 2 && box2) {
             box2.classList.add('active');
             remainingValue -= 2;
         }
-        
         // Ativar caixas de valor 1 para o restante
-        const box1 = document.querySelector(`[data-pericia="${nome}"][data-value="1"]`);
+        const box1 = document.querySelector(`[data-pericia="${nomePericia}"][data-value="1"]`);
         if (remainingValue >= 1 && box1) {
             box1.classList.add('active');
             remainingValue -= 1;
         }
-        
         // Ativar caixa bugada se necessário
         if (pericia.bugado) {
-            const bugBox = document.querySelector(`[data-pericia="${nome}"][data-value="bugado"]`);
+            const bugBox = document.querySelector(`[data-pericia="${nomePericia}"][data-value="bugado"]`);
             if (bugBox) bugBox.classList.add('active');
         }
     });
     
     // Especializações
     Object.entries(character.especializacoes || {}).forEach(([nome, valor]) => {
-        const input = document.querySelector(`input[data-pericia="${nome}"]`);
+        // Padronizar nome para o formato com hífens
+        let nomePericia = nome.replace(/([A-Z])/g, '-$1').toLowerCase().replace(/^-/, '');
+        if (nome === 'mano-a-mano') nomePericia = 'mano-a-mano';
+        const input = document.querySelector(`input[data-pericia="${nomePericia}"]`);
         if (input) input.value = valor;
     });
     
@@ -934,7 +939,7 @@ function coletarDadosFicha() {
         dadosFicha.pericias[pericia] = { value, bugado };
         
         // Verificar especialização
-        const especInput = document.querySelector(`input[data-especializacao="${pericia}"]`);
+        const especInput = document.querySelector(`input[data-pericia="${pericia}"]`);
         if (especInput?.value) {
             dadosFicha.especializacoes[pericia] = especInput.value;
         }
@@ -1024,25 +1029,56 @@ function aplicarDadosFicha(dadosFicha) {
         // Aplicar perícias
         if (dadosFicha.pericias) {
             Object.entries(dadosFicha.pericias).forEach(([pericia, data]) => {
-                const diceBoxes = document.querySelectorAll(`[data-pericia="${pericia}"]`);
-                for (let i = 0; i < data.value && i < diceBoxes.length; i++) {
-                    const box = diceBoxes[i];
-                    box.classList.add('active');
-                    if (data.bugado && box.classList.contains('bugado')) {
+                // Padronizar nome para o formato com hífens
+                let nomePericia = pericia.replace(/([A-Z])/g, '-$1').toLowerCase().replace(/^-/, '');
+                if (pericia === 'mano-a-mano') nomePericia = 'mano-a-mano';
+                // Limpar todas as caixas antes de ativar
+                const allBoxes = document.querySelectorAll(`[data-pericia="${nomePericia}"]`);
+                allBoxes.forEach(box => box.classList.remove('active'));
+                let remaining = data.value || 0;
+                // Ativar caixas de valor 1 e 2 normalmente
+                const box1 = document.querySelector(`[data-pericia="${nomePericia}"][data-value="1"]`);
+                const box2 = document.querySelector(`[data-pericia="${nomePericia}"][data-value="2"]`);
+                let pontosRestantes = data.value || 0;
+                // Ativar caixa de valor 2 se possível
+                if (pontosRestantes >= 2 && box2) {
+                    box2.classList.add('active');
+                    pontosRestantes -= 2;
+                }
+                // Ativar caixa de valor 1 para o restante
+                if (pontosRestantes >= 1 && box1) {
+                    box1.classList.add('active');
+                    pontosRestantes -= 1;
+                }
+                // Se o valor for 3, ative também a especialização
+                if (data.value === 3) {
+                    const box3 = document.querySelector(`[data-pericia="${nomePericia}"][data-value="3"]`);
+                    if (box3) {
+                        box3.classList.add('active');
+                        box3.classList.remove('disabled');
+                    }
+                }
+                // Ativar caixa bugada se necessário
+                if (data.bugado) {
+                    const bugBox = document.querySelector(`[data-pericia="${nomePericia}"][data-value="bugado"]`);
+                    if (bugBox) {
                         // Se é bugado, só marcar a caixa bugada
-                        diceBoxes.forEach(b => b.classList.remove('active'));
-                        box.classList.add('active');
-                        break;
+                        allBoxes.forEach(b => b.classList.remove('active'));
+                        bugBox.classList.add('active');
                     }
                 }
             });
         }
-        
         // Aplicar especializações
         if (dadosFicha.especializacoes) {
             Object.entries(dadosFicha.especializacoes).forEach(([pericia, especializacao]) => {
-                const input = document.querySelector(`input[data-especializacao="${pericia}"]`);
-                if (input) input.value = especializacao;
+                // Padronizar nome para o formato com hífens
+                let nomePericia = pericia.replace(/([A-Z])/g, '-$1').toLowerCase().replace(/^-/, '');
+                if (pericia === 'mano-a-mano') nomePericia = 'mano-a-mano';
+                const input = document.querySelector(`input[data-pericia="${nomePericia}"]`);
+                if (input) {
+                    input.value = especializacao;
+                }
             });
         }
         
