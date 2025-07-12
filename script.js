@@ -48,7 +48,10 @@ let character = {
     exausta: false,
     sobrecarregada: false,
     atitudeBugada: '',
-    consequenciaSobrecarga: ''
+    consequenciaSobrecarga: '',
+
+    // Imagem do personagem
+    imagemPersonagem: null
 };
 
 // Cache de elementos DOM para melhor performance
@@ -1361,3 +1364,429 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// ===== FUNCIONALIDADE SIMPLES DE IMAGEM DO PERSONAGEM =====
+
+// Estado da imagem
+let imagemPersonagem = null;
+
+// Adicionar ao estado do personagem
+character.imagemPersonagem = null;
+
+// Função para criar um canvas de recorte interativo
+function createSimpleCropModal(imageSrc) {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        backdrop-filter: blur(5px);
+    `;
+    
+    const content = document.createElement('div');
+    content.style.cssText = `
+        background: #1a1f29;
+        border: 2px solid #4dd0e1;
+        border-radius: 15px;
+        box-shadow: 0 0 30px rgba(77, 208, 225, 0.3);
+        max-width: 90vw;
+        max-height: 90vh;
+        width: 700px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    `;
+    
+    const header = document.createElement('div');
+    header.style.cssText = `
+        padding: 20px;
+        border-bottom: 1px solid #4dd0e1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #0f1419;
+    `;
+    header.innerHTML = `
+        <div>
+            <h3 style="color: #4dd0e1; font-family: 'Orbitron', monospace; margin: 0;">Recortar Imagem</h3>
+            <p style="color: #81c784; font-size: 0.8rem; margin: 5px 0 0 0;">Clique e arraste para selecionar a área de recorte</p>
+        </div>
+        <button id="close-crop" style="background: none; border: none; color: #e57373; font-size: 1.5rem; cursor: pointer;">&times;</button>
+    `;
+    
+    const body = document.createElement('div');
+    body.style.cssText = `
+        padding: 20px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 450px;
+    `;
+    
+    const canvasContainer = document.createElement('div');
+    canvasContainer.style.cssText = `
+        position: relative;
+        border: 2px solid #4dd0e1;
+        margin-bottom: 20px;
+        background: #000;
+    `;
+    
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = `
+        display: block;
+        max-width: 400px;
+        max-height: 400px;
+    `;
+    
+    const cropOverlay = document.createElement('div');
+    cropOverlay.style.cssText = `
+        position: absolute;
+        border: 2px solid #4dd0e1;
+        background: rgba(77, 208, 225, 0.2);
+        cursor: move;
+        top: 25%;
+        left: 25%;
+        width: 50%;
+        height: 50%;
+        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+        box-sizing: border-box;
+    `;
+    // Adiciona handles nos 4 cantos
+    const handleSize = 16;
+    const handles = ['nw','ne','sw','se'].map(pos => {
+        const h = document.createElement('div');
+        h.className = 'crop-handle crop-handle-' + pos;
+        h.style.cssText = `
+            position: absolute;
+            width: ${handleSize}px;
+            height: ${handleSize}px;
+            background: #4dd0e1;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            z-index: 2;
+            cursor: ${pos==='nw'||pos==='se'?'nwse-resize':'nesw-resize'};
+        `;
+        if(pos==='nw'){h.style.left='-8px';h.style.top='-8px';}
+        if(pos==='ne'){h.style.right='-8px';h.style.top='-8px';}
+        if(pos==='sw'){h.style.left='-8px';h.style.bottom='-8px';}
+        if(pos==='se'){h.style.right='-8px';h.style.bottom='-8px';}
+        cropOverlay.appendChild(h);
+        return h;
+    });
+    canvasContainer.appendChild(canvas);
+    canvasContainer.appendChild(cropOverlay);
+    
+    const footer = document.createElement('div');
+    footer.style.cssText = `
+        padding: 20px;
+        border-top: 1px solid #4dd0e1;
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        background: #0f1419;
+    `;
+    footer.innerHTML = `
+        <button id="cancel-crop" style="padding: 10px 20px; border: 2px solid #e57373; border-radius: 8px; background: transparent; color: #e57373; cursor: pointer; font-family: 'Orbitron', monospace;">Cancelar</button>
+        <button id="confirm-crop" style="padding: 10px 20px; border: 2px solid #66bb6a; border-radius: 8px; background: transparent; color: #66bb6a; cursor: pointer; font-family: 'Orbitron', monospace;">Confirmar</button>
+    `;
+    
+    body.appendChild(canvasContainer);
+    content.appendChild(header);
+    content.appendChild(body);
+    content.appendChild(footer);
+    modal.appendChild(content);
+    
+    // Variáveis para controle de crop
+    let isDragging = false;
+    let isResizing = false;
+    let resizeHandle = null;
+    let startX, startY, startW, startH, startL, startT;
+    let originalImage = null;
+    
+    // Carregar e desenhar a imagem
+    const img = new Image();
+    img.onload = function() {
+        originalImage = img;
+        
+        // Calcular dimensões proporcionais
+        const maxSize = 400;
+        let width = img.width;
+        let height = img.height;
+        
+        if (width > height) {
+            if (width > maxSize) {
+                height = (height * maxSize) / width;
+                width = maxSize;
+            }
+        } else {
+            if (height > maxSize) {
+                width = (width * maxSize) / height;
+                height = maxSize;
+            }
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        canvasContainer.style.width = width + 'px';
+        canvasContainer.style.height = height + 'px';
+        
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        // Ajustar overlay inicial
+        const overlaySize = Math.min(width, height) * 0.6;
+        const overlayX = (width - overlaySize) / 2;
+        const overlayY = (height - overlaySize) / 2;
+        
+        cropOverlay.style.left = overlayX + 'px';
+        cropOverlay.style.top = overlayY + 'px';
+        cropOverlay.style.width = overlaySize + 'px';
+        cropOverlay.style.height = overlaySize + 'px';
+    };
+    img.src = imageSrc;
+    
+    // Sistema de arrastar e redimensionar o overlay
+    cropOverlay.addEventListener('mousedown', function(e) {
+        if (e.target === cropOverlay) {
+            isDragging = true;
+            const rect = canvas.getBoundingClientRect();
+            startX = e.clientX - rect.left - cropOverlay.offsetLeft;
+            startY = e.clientY - rect.top - cropOverlay.offsetTop;
+            e.preventDefault();
+        }
+    });
+    handles.forEach((handle, idx) => {
+        handle.addEventListener('mousedown', function(e) {
+            isResizing = true;
+            resizeHandle = handle;
+            startX = e.clientX;
+            startY = e.clientY;
+            startW = cropOverlay.offsetWidth;
+            startH = cropOverlay.offsetHeight;
+            startL = cropOverlay.offsetLeft;
+            startT = cropOverlay.offsetTop;
+            e.preventDefault();
+            e.stopPropagation();
+        });
+    });
+    document.addEventListener('mousemove', function(e) {
+        const rect = canvas.getBoundingClientRect();
+        if (isDragging) {
+            let newX = e.clientX - rect.left - startX;
+            let newY = e.clientY - rect.top - startY;
+            // Limitar movimento dentro do canvas
+            const maxX = canvas.width - cropOverlay.offsetWidth;
+            const maxY = canvas.height - cropOverlay.offsetHeight;
+            newX = Math.max(0, Math.min(newX, maxX));
+            newY = Math.max(0, Math.min(newY, maxY));
+            cropOverlay.style.left = newX + 'px';
+            cropOverlay.style.top = newY + 'px';
+        } else if (isResizing && resizeHandle) {
+            // Redimensionar mantendo proporção 1:1
+            let dx = e.clientX - startX;
+            let dy = e.clientY - startY;
+            let newW = startW, newH = startH, newL = startL, newT = startT;
+            const minSize = 40;
+            if (resizeHandle === handles[0]) { // nw
+                let size = Math.max(minSize, startW - dx, startH - dy);
+                newL = startL + (startW - size);
+                newT = startT + (startH - size);
+                newW = size;
+                newH = size;
+            } else if (resizeHandle === handles[1]) { // ne
+                let size = Math.max(minSize, startW + dx, startH - dy);
+                newT = startT + (startH - size);
+                newW = size;
+                newH = size;
+            } else if (resizeHandle === handles[2]) { // sw
+                let size = Math.max(minSize, startW - dx, startH + dy);
+                newL = startL + (startW - size);
+                newW = size;
+                newH = size;
+            } else if (resizeHandle === handles[3]) { // se
+                let size = Math.max(minSize, startW + dx, startH + dy);
+                newW = size;
+                newH = size;
+            }
+            // Limitar dentro do canvas
+            newL = Math.max(0, Math.min(newL, canvas.width - newW));
+            newT = Math.max(0, Math.min(newT, canvas.height - newH));
+            if (newL + newW > canvas.width) newW = canvas.width - newL;
+            if (newT + newH > canvas.height) newH = canvas.height - newT;
+            cropOverlay.style.left = newL + 'px';
+            cropOverlay.style.top = newT + 'px';
+            cropOverlay.style.width = newW + 'px';
+            cropOverlay.style.height = newH + 'px';
+        }
+    });
+    document.addEventListener('mouseup', function() {
+        isDragging = false;
+        isResizing = false;
+        resizeHandle = null;
+    });
+    
+    // Eventos dos botões
+    header.querySelector('#close-crop').onclick = () => document.body.removeChild(modal);
+    footer.querySelector('#cancel-crop').onclick = () => document.body.removeChild(modal);
+    footer.querySelector('#confirm-crop').onclick = () => {
+        if (!originalImage) return;
+        // Calcular coordenadas de recorte na imagem original
+        // Usar getBoundingClientRect para precisão
+        const rect = canvas.getBoundingClientRect();
+        const overlayRect = cropOverlay.getBoundingClientRect();
+        // Posição do overlay relativa ao canvas
+        const relLeft = overlayRect.left - rect.left;
+        const relTop = overlayRect.top - rect.top;
+        const relWidth = cropOverlay.offsetWidth;
+        const relHeight = cropOverlay.offsetHeight;
+        // Proporção entre canvas e imagem original
+        const scaleX = originalImage.width / canvas.width;
+        const scaleY = originalImage.height / canvas.height;
+        // Coordenadas finais na imagem original
+        const cropX = Math.round(relLeft * scaleX);
+        const cropY = Math.round(relTop * scaleY);
+        const cropWidth = Math.round(relWidth * scaleX);
+        const cropHeight = Math.round(relHeight * scaleY);
+        // Criar canvas para a imagem recortada
+        const cropCanvas = document.createElement('canvas');
+        cropCanvas.width = 250;
+        cropCanvas.height = 250;
+        const cropCtx = cropCanvas.getContext('2d');
+        // Recortar e redimensionar para 250x250
+        cropCtx.imageSmoothingEnabled = true;
+        cropCtx.imageSmoothingQuality = 'high';
+        cropCtx.clearRect(0, 0, 250, 250);
+        cropCtx.drawImage(
+            originalImage,
+            cropX, cropY, cropWidth, cropHeight,
+            0, 0, 250, 250
+        );
+        // Exportar em PNG para máxima qualidade
+        const dataURL = cropCanvas.toDataURL('image/png');
+        setPersonagemImage(dataURL);
+        document.body.removeChild(modal);
+    };
+    
+    modal.onclick = (e) => {
+        if (e.target === modal) document.body.removeChild(modal);
+    };
+    
+    return modal;
+}
+
+// Função para definir a imagem do personagem
+function setPersonagemImage(dataURL) {
+    imagemPersonagem = dataURL;
+    character.imagemPersonagem = dataURL;
+    
+    const preview = document.getElementById('personagem-preview');
+    const placeholder = document.querySelector('.imagem-placeholder');
+    const container = document.querySelector('.personagem-imagem');
+    const removeBtn = document.getElementById('remover-imagem');
+    
+    if (preview && placeholder && container) {
+        preview.src = dataURL;
+        preview.style.display = 'block';
+        placeholder.style.display = 'none';
+        container.classList.add('has-image');
+        
+        if (removeBtn) {
+            removeBtn.style.display = 'block';
+        }
+    }
+}
+
+// Função para remover a imagem
+function removePersonagemImage() {
+    imagemPersonagem = null;
+    character.imagemPersonagem = null;
+    
+    const preview = document.getElementById('personagem-preview');
+    const placeholder = document.querySelector('.imagem-placeholder');
+    const container = document.querySelector('.personagem-imagem');
+    const removeBtn = document.getElementById('remover-imagem');
+    
+    if (preview && placeholder && container) {
+        preview.style.display = 'none';
+        preview.src = '';
+        placeholder.style.display = 'flex';
+        container.classList.remove('has-image');
+        
+        if (removeBtn) {
+            removeBtn.style.display = 'none';
+        }
+    }
+}
+
+// Inicializar quando DOM estiver pronto
+document.addEventListener('DOMContentLoaded', function() {
+    const uploadInput = document.getElementById('imagem-upload');
+    const removeBtn = document.getElementById('remover-imagem');
+    
+    if (uploadInput) {
+        uploadInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            if (!file.type.startsWith('image/')) {
+                alert('Por favor, selecione apenas arquivos de imagem.');
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) {
+                alert('A imagem deve ter no máximo 5MB.');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const modal = createSimpleCropModal(event.target.result);
+                document.body.appendChild(modal);
+            };
+            reader.readAsDataURL(file);
+            
+            e.target.value = '';
+        });
+    }
+    
+    if (removeBtn) {
+        removeBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            removePersonagemImage();
+        });
+    }
+    
+    // Integrar com sistema de save/load
+    const originalColetar = coletarDadosFicha;
+    coletarDadosFicha = function() {
+        const dados = originalColetar.call(this);
+        if (imagemPersonagem) {
+            dados.imagemPersonagem = imagemPersonagem;
+        }
+        return dados;
+    };
+    
+    const originalAplicar = aplicarDadosFicha;
+    aplicarDadosFicha = function(dados) {
+        const result = originalAplicar.call(this, dados);
+        if (dados && dados.imagemPersonagem) {
+            setPersonagemImage(dados.imagemPersonagem);
+        }
+        return result;
+    };
+});
+
+// ===== FIM DA FUNCIONALIDADE DE IMAGEM =====
+
+// ===== FUNCIONALIDADE DE UPLOAD DE IMAGEM DO PERSONAGEM =====
+
+
