@@ -2341,27 +2341,13 @@ body::after {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 400px;
-    background: var(--bg-tertiary);
+    min-height: 300px;
 }
 
 .crop-container {
     width: 100%;
     max-width: 500px;
     text-align: center;
-    min-height: 300px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#crop-image {
-    max-width: 100%;
-    max-height: 350px;
-    height: auto;
-    display: block !important;
-    margin: 0 auto;
-    border: 1px solid var(--neon-cyan);
 }
 
 .crop-modal-footer {
