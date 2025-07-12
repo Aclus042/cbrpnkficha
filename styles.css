@@ -1,3 +1,21 @@
+/* Remove overlay/pseudo-element for equipment/ampliacao items when not bugado (any state) */
+.equipment-item:not(.bugado)::before,
+.ampliacao-item-eq:not(.bugado)::before {
+    display: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: none !important;
+    content: none !important;
+}
+/* Remove overlay/pseudo-element on hover for equipment/ampliacao items when not bugado */
+.equipment-item:not(.bugado):hover::before,
+.ampliacao-item-eq:not(.bugado):hover::before {
+    display: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: none !important;
+    content: none !important;
+}
 * {
     margin: 0;
     padding: 0;
@@ -968,6 +986,10 @@ body {
     overflow: hidden;
 }
 
+.equipment-item.bugado {
+    box-shadow: none !important;
+}
+
 
 .equipment-item::before {
     content: '';
@@ -978,6 +1000,10 @@ body {
     height: 100%;
     background: var(--bg-card);
     transition: left 0.2s ease;
+}
+
+.equipment-item.bugado::before {
+    display: none !important;
 }
 
 .equipment-item:hover {

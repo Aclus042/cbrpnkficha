@@ -1,4 +1,25 @@
 // Estado do personagem
+// Garante que a animação glitch esteja sempre disponível
+if (!document.getElementById('glitch-keyframes')) {
+    const style = document.createElement('style');
+    style.id = 'glitch-keyframes';
+    style.textContent = `
+    @keyframes glitch {
+        0% { transform: none; }
+        10% { transform: skewX(-2deg) scaleY(1.01); }
+        20% { transform: translate(-2px, 1px) skewX(2deg); }
+        30% { transform: translate(2px, -1px) skewX(-1deg); }
+        40% { transform: skewX(1deg) scaleY(0.99); }
+        50% { transform: none; }
+        60% { transform: translate(1px, 2px) skewX(1deg); }
+        70% { transform: translate(-1px, -2px) skewX(-2deg); }
+        80% { transform: skewX(2deg) scaleY(1.01); }
+        90% { transform: translate(2px, 1px) skewX(-1deg); }
+        100% { transform: none; }
+    }
+    `;
+    document.head.appendChild(style);
+}
 let character = {
     // Identidade
     apelido: '',
@@ -13,7 +34,6 @@ let character = {
         empatica: { value: 0, bugado: false },
         furtiva: { value: 0, bugado: false }
     },
-    
     // Perícias
     pericias: {
         analise: { value: 0, bugado: false },
@@ -82,7 +102,239 @@ const debouncedValidateAtitudes = debounce(validateAtitudes, 50);
 const debouncedValidatePericias = debounce(validatePericias, 50);
 const debouncedUpdateCargaStatus = debounce(updateCargaStatus, 100);
 
+// Função para adicionar selo diegético de bugado (aparece só no hover ou se bugado)
+function addBugSealToItems(selector) {
+    document.querySelectorAll(selector).forEach(item => {
+        // Remove selos antigos
+        item.querySelectorAll('.bug-seal').forEach(seal => seal.remove());
+        item.style.position = 'relative';
+        item.style.overflow = 'visible';
+        item.style.zIndex = '2';
+        const seal = document.createElement('div');
+        seal.className = 'bug-seal';
+        seal.title = 'Marcar como bugado';
+        seal.innerHTML = '<span>B</span>';
+        // Estilo diegético: selo circular, neon, integrado
+        Object.assign(seal.style, {
+            zIndex: '10',
+            position: 'absolute',
+            top: '8px',
+            right: '8px',
+            width: '28px',
+            height: '28px',
+            borderRadius: '50%',
+            background: item.classList.contains('bugado') ? 'radial-gradient(circle at 60% 40%, #ff1744 70%, #0f1419 100%)' : 'radial-gradient(circle at 60% 40%, #4dd0e1 60%, #0f1419 100%)',
+            color: item.classList.contains('bugado') ? '#fff' : 'rgba(77, 208, 225, 0.25)',
+            border: item.classList.contains('bugado') ? '2.5px solid #ff1744' : '2.5px solid rgba(77, 208, 225, 0.25)',
+            fontFamily: 'Orbitron, monospace',
+            fontWeight: 'bold',
+            fontSize: '18px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: item.classList.contains('bugado') ? '0 0 4px 1px #ff1744' : '0 0 8px 1px rgba(77, 208, 225, 0.15)',
+            cursor: 'pointer',
+            opacity: item.classList.contains('bugado') ? '1' : '0.25', // Sempre visível, só destacado bugado/hover
+            pointerEvents: item.classList.contains('bugado') ? 'auto' : 'none',
+            transition: 'opacity 0.18s, color 0.18s, border 0.18s, box-shadow 0.18s',
+            zIndex: '5',
+            userSelect: 'none',
+        });
+        // Garante que o item nunca tenha sombra
+        item.style.boxShadow = 'none';
+        seal.querySelector('span').style.letterSpacing = '0.04em';
+        seal.querySelector('span').style.textShadow = item.classList.contains('bugado')
+            ? '0 0 8px #ff1744, 0 0 2px #fff'
+            : '0 0 6px rgba(77, 208, 225, 0.15)';
+        // Hover para mostrar selo
+        item.addEventListener('mouseenter', () => {
+            if (!item.classList.contains('bugado')) {
+                seal.style.opacity = '0.45';
+                seal.style.pointerEvents = 'auto';
+                seal.style.color = '#4dd0e1';
+                seal.style.border = '2.5px solid #4dd0e1';
+                seal.style.boxShadow = '0 0 8px 1px #4dd0e1';
+                seal.querySelector('span').style.textShadow = '0 0 6px #4dd0e1';
+            }
+        });
+        item.addEventListener('mouseleave', () => {
+            if (!item.classList.contains('bugado')) {
+                seal.style.opacity = '0.25';
+                seal.style.pointerEvents = 'none';
+                seal.style.color = 'rgba(77, 208, 225, 0.25)';
+                seal.style.border = '2.5px solid rgba(77, 208, 225, 0.25)';
+                seal.style.boxShadow = '0 0 8px 1px rgba(77, 208, 225, 0.15)';
+                seal.querySelector('span').style.textShadow = '0 0 6px rgba(77, 208, 225, 0.15)';
+            }
+        });
+        seal.addEventListener('click', e => {
+            e.preventDefault();
+            e.stopPropagation();
+            // Permite alternar bugado mesmo equipado
+            item.classList.toggle('bugado');
+            // Garante que o item nunca tenha sombra
+            item.style.boxShadow = 'none';
+            // Procura um input[type=checkbox] dentro do item
+            const checkbox = item.querySelector('input[type="checkbox"]');
+            const equipado = checkbox && checkbox.checked;
+            // Atualiza visual do selo
+            if (item.classList.contains('bugado')) {
+                seal.style.background = 'radial-gradient(circle at 60% 40%, #ff1744 70%, #0f1419 100%)';
+                seal.style.color = '#fff';
+                seal.style.border = '2.5px solid #ff1744';
+                seal.style.boxShadow = '0 0 4px 1px #ff1744';
+                seal.style.opacity = '1';
+                seal.querySelector('span').style.textShadow = '0 0 8px #ff1744, 0 0 2px #fff';
+                applyGlitchEffect(item);
+            } else {
+                seal.style.background = 'radial-gradient(circle at 60% 40%, #4dd0e1 60%, #0f1419 100%)';
+                seal.style.color = 'rgba(77, 208, 225, 0.5)';
+                seal.style.border = '2.5px solid rgba(77, 208, 225, 0.5)';
+                seal.style.boxShadow = '0 0 8px 1px rgba(77, 208, 225, 0.3)';
+                seal.style.opacity = '0.45';
+                seal.querySelector('span').style.textShadow = '0 0 6px rgba(77, 208, 225, 0.3)';
+                removeGlitchEffect(item);
+            }
+        });
+
+        // Aplica o efeito se já estiver bugado ao carregar
+        // E garante que o item nunca tenha sombra
+        item.style.boxShadow = 'none';
+        if (item.classList.contains('bugado')) {
+            applyGlitchEffect(item);
+            seal.style.opacity = '1';
+            seal.style.pointerEvents = 'auto';
+            seal.style.color = '#fff';
+            seal.style.border = '2.5px solid #ff1744';
+            seal.style.boxShadow = '0 0 4px 1px #ff1744';
+            seal.querySelector('span').style.textShadow = '0 0 8px #ff1744, 0 0 2px #fff';
+        } else {
+            removeGlitchEffect(item);
+            seal.style.opacity = '0.25';
+            seal.style.pointerEvents = 'none';
+            seal.style.color = 'rgba(77, 208, 225, 0.25)';
+            seal.style.border = '2.5px solid rgba(77, 208, 225, 0.25)';
+            seal.style.boxShadow = '0 0 8px 1px rgba(77, 208, 225, 0.15)';
+            seal.querySelector('span').style.textShadow = '0 0 6px rgba(77, 208, 225, 0.15)';
+        }
+
+        // Se houver checkbox, atualiza efeito glitch ao equipar/desequipar
+        const checkboxListener = item.querySelector('input[type="checkbox"]');
+        if (checkboxListener) {
+            checkboxListener.addEventListener('change', function() {
+                // Garante que o item nunca tenha sombra
+                item.style.boxShadow = 'none';
+                if (item.classList.contains('bugado')) {
+                    applyGlitchEffect(item);
+                } else {
+                    removeGlitchEffect(item);
+                }
+            });
+        }
+
+        // Função para aplicar efeito glitch
+        function applyGlitchEffect(target) {
+            removeGlitchEffect(target);
+            target.style.position = 'relative';
+            target.style.overflow = 'visible';
+            target.style.boxShadow = 'none';
+            target.style.setProperty('filter', 'contrast(1.2) brightness(1.1)', 'important');
+            target.style.setProperty('animation', 'glitch 0.7s infinite linear', 'important');
+        }
+        // Função para remover efeito glitch
+        function removeGlitchEffect(target) {
+            target.style.removeProperty('filter');
+            target.style.removeProperty('animation');
+            target.style.boxShadow = 'none';
+        }
+        item.appendChild(seal);
+        // Garante que o selo nunca seja escondido por overflow do item
+        seal.style.zIndex = '10';
+        seal.style.pointerEvents = seal.style.pointerEvents || 'none';
+
+        // Se houver checkbox, atualiza efeito glitch ao equipar/desequipar
+        const checkbox = item.querySelector('input[type="checkbox"]');
+        if (checkbox) {
+            checkbox.addEventListener('change', function() {
+                if (item.classList.contains('bugado')) {
+                    applyGlitchEffect(item);
+                } else {
+                    removeGlitchEffect(item);
+                }
+            });
+        }
+    });
+}
+
+// Adiciona glitch visual para atitudes e perícias bugadas
+function applyGlitchToBuggedDice() {
+    // Atitudes
+    Object.keys(character.atitudes).forEach(atitude => {
+        const isBugado = character.atitudes[atitude]?.bugado;
+        const bugBtn = document.querySelector(`[data-atitude="${atitude}"][data-value="bugado"]`);
+        let container = null;
+        if (bugBtn) {
+            container = bugBtn.closest('.atitude-column') || bugBtn.closest('.atitude-item');
+        }
+        if (container) {
+            if (isBugado) {
+                container.style.setProperty('filter', 'contrast(1.2) brightness(1.1)', 'important');
+                container.style.setProperty('animation', 'glitch 0.7s infinite linear', 'important');
+                console.log('GLITCH ATITUDE CONTAINER', container, container.style.animation);
+            } else {
+                container.style.removeProperty('filter');
+                container.style.removeProperty('animation');
+            }
+            container.style.boxShadow = 'none';
+        }
+        if (bugBtn) {
+            if (isBugado) {
+                bugBtn.style.setProperty('filter', 'contrast(1.2) brightness(1.1)', 'important');
+                bugBtn.style.setProperty('animation', 'glitch 0.7s infinite linear', 'important');
+                console.log('GLITCH ATITUDE BOTAO', bugBtn, bugBtn.style.animation);
+            } else {
+                bugBtn.style.removeProperty('filter');
+                bugBtn.style.removeProperty('animation');
+            }
+            bugBtn.style.boxShadow = 'none';
+        }
+    });
+    // Perícias
+    Object.keys(character.pericias).forEach(pericia => {
+        const isBugado = character.pericias[pericia]?.bugado;
+        let nomePericia = pericia.replace(/([A-Z])/g, '-$1').toLowerCase().replace(/^-/, '');
+        if (pericia === 'mano-a-mano') nomePericia = 'mano-a-mano';
+        const bugBtn = document.querySelector(`[data-pericia="${nomePericia}"][data-value="bugado"]`);
+        let container = null;
+        if (bugBtn) {
+            container = bugBtn.closest('.pericia-item') || bugBtn.closest('.pericia-column');
+        }
+        if (container) {
+            if (isBugado) {
+                container.style.setProperty('filter', 'contrast(1.2) brightness(1.1)', 'important');
+                container.style.setProperty('animation', 'glitch 0.7s infinite linear', 'important');
+                console.log('GLITCH PERICIA CONTAINER', container, container.style.animation);
+            } else {
+                container.style.removeProperty('filter');
+                container.style.removeProperty('animation');
+            }
+            container.style.boxShadow = 'none';
+        }
+        if (bugBtn) {
+            if (isBugado) {
+                bugBtn.style.setProperty('filter', 'contrast(1.2) brightness(1.1)', 'important');
+                bugBtn.style.setProperty('animation', 'glitch 0.7s infinite linear', 'important');
+                console.log('GLITCH PERICIA BOTAO', bugBtn, bugBtn.style.animation);
+            } else {
+                bugBtn.style.removeProperty('filter');
+                bugBtn.style.removeProperty('animation');
+            }
+            bugBtn.style.boxShadow = 'none';
+        }
+    });
+}
 // Inicialização
+// ===== INICIALIZAÇÃO PRINCIPAL =====
 document.addEventListener('DOMContentLoaded', function() {
     // Cachear elementos DOM importantes
     domCache.atitudeStatus = document.getElementById('atitude-status');
@@ -91,13 +343,21 @@ document.addEventListener('DOMContentLoaded', function() {
     domCache.equipmentCheckboxes = document.querySelectorAll('input[type="checkbox"][name^="equip-"]');
     domCache.stressCheckboxes = document.querySelectorAll('input[name^="stress-"]');
     domCache.damageCheckboxes = document.querySelectorAll('input[name^="dano-"]');
-    
+
     initializeTabs();
     initializeFormHandlers();
     initializeDiceBoxes();
     initializeValidation();
     initializeEquipmentCategories();
     initializeSaveLoad();
+
+    // Adiciona selo diegético B para equipamentos e ampliações
+    setTimeout(() => {
+        addBugSealToItems('.equipment-item');
+        addBugSealToItems('.ampliacao-item-eq');
+        // Aplica glitch visual para atitudes e perícias bugadas ao carregar
+        applyGlitchToBuggedDice();
+    }, 0);
 });
 
 // Sistema de Navegação
@@ -218,6 +478,8 @@ function handleAtitudeDiceClick(event) {
     
     // Usar requestAnimationFrame para otimizar a validação
     debouncedValidateAtitudes();
+    // Aplica glitch visual imediatamente após interação
+    applyGlitchToBuggedDice();
 }
 
 function handlePericiaDiceClick(event) {
@@ -286,6 +548,7 @@ function handlePericiaDiceClick(event) {
     requestAnimationFrame(() => {
         updateEspecializacaoButtons();
         debouncedValidatePericias();
+        applyGlitchToBuggedDice();
     });
 }
 
@@ -583,26 +846,10 @@ function initializeValidation() {
             const value = parseInt(this.value);
             if (value > 3) {
                 this.value = 3;
-            } else if (value < 0) {
-                this.value = 0;
             }
         });
     });
-}
 
-// Funções de atualização do personagem
-function updateCharacterData() {
-    // Identidade
-    character.apelido = document.getElementById('apelido').value;
-    character.aparencia = document.getElementById('aparencia').value;
-    character.esquema = document.getElementById('esquema').value;
-    character.detalhesEsquema = document.getElementById('detalhes-esquema').value;
-    
-    // Atitudes
-    document.querySelectorAll('.atitude-select').forEach(select => {
-        character.atitudes[select.name] = parseInt(select.value) || 0;
-    });
-    
     // Perícias
     document.querySelectorAll('.pericia-input').forEach(input => {
         const name = input.name.replace(/-/g, '');
@@ -1762,67 +2009,5 @@ function removePersonagemImage() {
     }
 }
 
-// Inicializar quando DOM estiver pronto
-document.addEventListener('DOMContentLoaded', function() {
-    const uploadInput = document.getElementById('imagem-upload');
-    const removeBtn = document.getElementById('remover-imagem');
-    
-    if (uploadInput) {
-        uploadInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            
-            if (!file.type.startsWith('image/')) {
-                alert('Por favor, selecione apenas arquivos de imagem.');
-                return;
-            }
-            
-            if (file.size > 5 * 1024 * 1024) {
-                alert('A imagem deve ter no máximo 5MB.');
-                return;
-            }
-            
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const modal = createSimpleCropModal(event.target.result);
-                document.body.appendChild(modal);
-            };
-            reader.readAsDataURL(file);
-            
-            e.target.value = '';
-        });
-    }
-    
-    if (removeBtn) {
-        removeBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            removePersonagemImage();
-        });
-    }
-    
-    // Integrar com sistema de save/load
-    const originalColetar = coletarDadosFicha;
-    coletarDadosFicha = function() {
-        const dados = originalColetar.call(this);
-        if (imagemPersonagem) {
-            dados.imagemPersonagem = imagemPersonagem;
-        }
-        return dados;
-    };
-    
-    const originalAplicar = aplicarDadosFicha;
-    aplicarDadosFicha = function(dados) {
-        const result = originalAplicar.call(this, dados);
-        if (dados && dados.imagemPersonagem) {
-            setPersonagemImage(dados.imagemPersonagem);
-        }
-        return result;
-    };
-});
-
 // ===== FIM DA FUNCIONALIDADE DE IMAGEM =====
-
-// ===== FUNCIONALIDADE DE UPLOAD DE IMAGEM DO PERSONAGEM =====
-
 
