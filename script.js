@@ -132,13 +132,14 @@ function addBugSealToItems(selector) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: item.classList.contains('bugado') ? '0 0 4px 1px #ff1744' : '0 0 8px 1px rgba(77, 208, 225, 0.15)',
+            boxShadow: item.classList.contains('bugado') ? '0 0 4px 1px #ff1744' : 'none',
             cursor: 'pointer',
-            opacity: item.classList.contains('bugado') ? '1' : '0.25', // Sempre visível, só destacado bugado/hover
+            opacity: item.classList.contains('bugado') ? '1' : '0', // Invisível quando não bugado
             pointerEvents: item.classList.contains('bugado') ? 'auto' : 'none',
             transition: 'opacity 0.18s, color 0.18s, border 0.18s, box-shadow 0.18s',
             zIndex: '5',
             userSelect: 'none',
+            visibility: item.classList.contains('bugado') ? 'visible' : 'hidden', // Garante que esteja oculto
         });
         // Garante que o item nunca tenha sombra
         item.style.boxShadow = 'none';
@@ -149,7 +150,8 @@ function addBugSealToItems(selector) {
         // Hover para mostrar selo
         item.addEventListener('mouseenter', () => {
             if (!item.classList.contains('bugado')) {
-                seal.style.opacity = '0.45';
+                seal.style.visibility = 'visible';
+                seal.style.opacity = '0.8'; // Mais visível no hover
                 seal.style.pointerEvents = 'auto';
                 seal.style.color = '#4dd0e1';
                 seal.style.border = '2.5px solid #4dd0e1';
@@ -159,12 +161,13 @@ function addBugSealToItems(selector) {
         });
         item.addEventListener('mouseleave', () => {
             if (!item.classList.contains('bugado')) {
-                seal.style.opacity = '0.25';
+                seal.style.visibility = 'hidden';
+                seal.style.opacity = '0'; // Completamente invisível quando não está em hover
                 seal.style.pointerEvents = 'none';
                 seal.style.color = 'rgba(77, 208, 225, 0.25)';
                 seal.style.border = '2.5px solid rgba(77, 208, 225, 0.25)';
-                seal.style.boxShadow = '0 0 8px 1px rgba(77, 208, 225, 0.15)';
-                seal.querySelector('span').style.textShadow = '0 0 6px rgba(77, 208, 225, 0.15)';
+                seal.style.boxShadow = 'none';
+                seal.querySelector('span').style.textShadow = 'none';
             }
         });
         seal.addEventListener('click', e => {
@@ -184,15 +187,19 @@ function addBugSealToItems(selector) {
                 seal.style.border = '2.5px solid #ff1744';
                 seal.style.boxShadow = '0 0 4px 1px #ff1744';
                 seal.style.opacity = '1';
+                seal.style.visibility = 'visible';
+                seal.style.pointerEvents = 'auto';
                 seal.querySelector('span').style.textShadow = '0 0 8px #ff1744, 0 0 2px #fff';
                 applyGlitchEffect(item);
             } else {
                 seal.style.background = 'radial-gradient(circle at 60% 40%, #4dd0e1 60%, #0f1419 100%)';
                 seal.style.color = 'rgba(77, 208, 225, 0.5)';
                 seal.style.border = '2.5px solid rgba(77, 208, 225, 0.5)';
-                seal.style.boxShadow = '0 0 8px 1px rgba(77, 208, 225, 0.3)';
-                seal.style.opacity = '0.45';
-                seal.querySelector('span').style.textShadow = '0 0 6px rgba(77, 208, 225, 0.3)';
+                seal.style.boxShadow = 'none';
+                seal.style.opacity = '0'; // Invisível quando não bugado
+                seal.style.visibility = 'hidden';
+                seal.style.pointerEvents = 'none';
+                seal.querySelector('span').style.textShadow = 'none';
                 removeGlitchEffect(item);
             }
         });
