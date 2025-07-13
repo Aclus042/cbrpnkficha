@@ -336,6 +336,8 @@ function applyGlitchToBuggedDice() {
 // Inicialização
 // ===== INICIALIZAÇÃO PRINCIPAL =====
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM carregado!');
+    
     // Cachear elementos DOM importantes
     domCache.atitudeStatus = document.getElementById('atitude-status');
     domCache.periciaStatus = document.getElementById('pericia-status');
@@ -344,12 +346,17 @@ document.addEventListener('DOMContentLoaded', function() {
     domCache.stressCheckboxes = document.querySelectorAll('input[name^="stress-"]');
     domCache.damageCheckboxes = document.querySelectorAll('input[name^="dano-"]');
 
+    console.log('Inicializando componentes...');
+    
     initializeTabs();
     initializeFormHandlers();
     initializeDiceBoxes();
     initializeValidation();
     initializeEquipmentCategories();
     initializeSaveLoad();
+    initializeImageUpload();
+
+    console.log('Componentes inicializados!');
 
     // Adiciona selo diegético B para equipamentos e ampliações
     setTimeout(() => {
@@ -1117,6 +1124,9 @@ function coletarDadosFicha() {
         esquema: document.getElementById('esquema')?.value || '',
         detalhesEsquema: document.getElementById('detalhes-esquema')?.value || '',
         
+        // Imagem do personagem
+        imagemPersonagem: character.imagemPersonagem || null,
+        
         // Atitudes
         atitudes: {},
         
@@ -1251,6 +1261,13 @@ function aplicarDadosFicha(dadosFicha) {
         if (dadosFicha.aparencia) document.getElementById('aparencia').value = dadosFicha.aparencia;
         if (dadosFicha.esquema) document.getElementById('esquema').value = dadosFicha.esquema;
         if (dadosFicha.detalhesEsquema) document.getElementById('detalhes-esquema').value = dadosFicha.detalhesEsquema;
+        
+        // Aplicar imagem do personagem
+        if (dadosFicha.imagemPersonagem) {
+            setPersonagemImage(dadosFicha.imagemPersonagem);
+        } else {
+            removePersonagemImage();
+        }
         
         // Limpar estados anteriores
         document.querySelectorAll('.dice-box.active').forEach(box => box.classList.remove('active'));
@@ -1658,6 +1675,8 @@ character.imagemPersonagem = null;
 
 // Função para criar um canvas de recorte interativo
 function createSimpleCropModal(imageSrc) {
+    console.log('createSimpleCropModal chamada com:', imageSrc ? 'imagem válida' : 'imagem inválida');
+    
     const modal = document.createElement('div');
     modal.style.cssText = `
         position: fixed;
@@ -1967,6 +1986,8 @@ function createSimpleCropModal(imageSrc) {
 
 // Função para definir a imagem do personagem
 function setPersonagemImage(dataURL) {
+    console.log('setPersonagemImage chamada com:', dataURL ? 'dados válidos' : 'dados inválidos');
+    
     imagemPersonagem = dataURL;
     character.imagemPersonagem = dataURL;
     
@@ -1975,15 +1996,26 @@ function setPersonagemImage(dataURL) {
     const container = document.querySelector('.personagem-imagem');
     const removeBtn = document.getElementById('remover-imagem');
     
+    console.log('Elementos para atualizar:', {
+        preview: preview ? 'OK' : 'ERRO',
+        placeholder: placeholder ? 'OK' : 'ERRO',
+        container: container ? 'OK' : 'ERRO',
+        removeBtn: removeBtn ? 'OK' : 'ERRO'
+    });
+    
     if (preview && placeholder && container) {
         preview.src = dataURL;
         preview.style.display = 'block';
         placeholder.style.display = 'none';
         container.classList.add('has-image');
         
+        console.log('Imagem definida com sucesso!');
+        
         if (removeBtn) {
             removeBtn.style.display = 'block';
         }
+    } else {
+        console.error('Elementos necessários não encontrados para definir a imagem');
     }
 }
 
@@ -2011,3 +2043,53 @@ function removePersonagemImage() {
 
 // ===== FIM DA FUNCIONALIDADE DE IMAGEM =====
 
+// Função para inicializar o upload de imagem
+function initializeImageUpload() {
+    console.log('Inicializando upload de imagem...');
+    const imageUpload = document.getElementById('imagem-upload');
+    const removeBtn = document.getElementById('remover-imagem');
+    
+    console.log('Elementos encontrados:', {
+        imageUpload: imageUpload ? 'OK' : 'ERRO',
+        removeBtn: removeBtn ? 'OK' : 'ERRO'
+    });
+    
+    if (imageUpload) {
+        console.log('Adicionando event listener para upload...');
+        imageUpload.addEventListener('change', function(event) {
+            console.log('Evento change disparado');
+            const file = event.target.files[0];
+            if (file) {
+                console.log('Arquivo selecionado:', file.name, file.type);
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        console.log('Imagem carregada, criando modal de crop...');
+                        const modal = createSimpleCropModal(e.target.result);
+                        document.body.appendChild(modal);
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('Por favor, selecione um arquivo de imagem válido.');
+                }
+            }
+            // Limpar o input para permitir selecionar a mesma imagem novamente
+            event.target.value = '';
+        });
+    } else {
+        console.error('Elemento imagem-upload não encontrado!');
+    }
+    
+    if (removeBtn) {
+        console.log('Adicionando event listener para remoção...');
+        removeBtn.addEventListener('click', function(event) {
+            console.log('Botão remover clicado');
+            event.preventDefault();
+            removePersonagemImage();
+        });
+    } else {
+        console.error('Elemento remover-imagem não encontrado!');
+    }
+}
+
+// ===== FIM DA FUNCIONALIDADE DE IMAGEM =====
