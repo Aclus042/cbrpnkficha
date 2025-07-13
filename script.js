@@ -114,60 +114,55 @@ function addBugSealToItems(selector) {
         seal.className = 'bug-seal';
         seal.title = 'Marcar como bugado';
         seal.innerHTML = '<span>B</span>';
-        // Estilo diegético: selo circular, neon, integrado
+        // Estilo diegético: selo quadrado como os dice-box das outras páginas
         Object.assign(seal.style, {
             zIndex: '10',
             position: 'absolute',
             top: '8px',
             right: '8px',
-            width: '28px',
-            height: '28px',
-            borderRadius: '50%',
-            background: item.classList.contains('bugado') ? 'radial-gradient(circle at 60% 40%, #ff1744 70%, #0f1419 100%)' : 'radial-gradient(circle at 60% 40%, #4dd0e1 60%, #0f1419 100%)',
-            color: item.classList.contains('bugado') ? '#fff' : 'rgba(77, 208, 225, 0.25)',
-            border: item.classList.contains('bugado') ? '2.5px solid #ff1744' : '2.5px solid rgba(77, 208, 225, 0.25)',
+            width: '32px',
+            height: '32px',
+            borderRadius: '6px', // Quadrado com bordas arredondadas como dice-box
+            background: item.classList.contains('bugado') ? 'var(--bg-card)' : 'var(--bg-card)',
+            color: item.classList.contains('bugado') ? 'var(--neon-pink)' : 'var(--neon-cyan)',
+            border: item.classList.contains('bugado') ? '2px solid var(--neon-pink)' : '2px solid var(--neon-cyan)',
             fontFamily: 'Orbitron, monospace',
-            fontWeight: 'bold',
-            fontSize: '18px',
+            fontWeight: '900',
+            fontSize: '0.8rem',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: item.classList.contains('bugado') ? '0 0 4px 1px #ff1744' : 'none',
+            boxShadow: item.classList.contains('bugado') ? '0 0 15px var(--neon-pink-glow)' : 'none',
             cursor: 'pointer',
             opacity: item.classList.contains('bugado') ? '1' : '0', // Invisível quando não bugado
             pointerEvents: item.classList.contains('bugado') ? 'auto' : 'none',
-            transition: 'opacity 0.18s, color 0.18s, border 0.18s, box-shadow 0.18s',
+            transition: 'all 0.3s ease', // Mesma transição dos dice-box
             zIndex: '5',
             userSelect: 'none',
             visibility: item.classList.contains('bugado') ? 'visible' : 'hidden', // Garante que esteja oculto
+            textShadow: 'var(--text-glow)',
         });
         // Garante que o item nunca tenha sombra
         item.style.boxShadow = 'none';
-        seal.querySelector('span').style.letterSpacing = '0.04em';
-        seal.querySelector('span').style.textShadow = item.classList.contains('bugado')
-            ? '0 0 8px #ff1744, 0 0 2px #fff'
-            : '0 0 6px rgba(77, 208, 225, 0.15)';
         // Hover para mostrar selo
         item.addEventListener('mouseenter', () => {
             if (!item.classList.contains('bugado')) {
                 seal.style.visibility = 'visible';
-                seal.style.opacity = '0.8'; // Mais visível no hover
+                seal.style.opacity = '1';
                 seal.style.pointerEvents = 'auto';
-                seal.style.color = '#4dd0e1';
-                seal.style.border = '2.5px solid #4dd0e1';
-                seal.style.boxShadow = '0 0 8px 1px #4dd0e1';
-                seal.querySelector('span').style.textShadow = '0 0 6px #4dd0e1';
+                seal.style.color = 'var(--neon-cyan)';
+                seal.style.border = '2px solid var(--neon-cyan)';
+                seal.style.boxShadow = '0 0 10px rgba(77, 208, 225, 0.3)';
             }
         });
         item.addEventListener('mouseleave', () => {
             if (!item.classList.contains('bugado')) {
                 seal.style.visibility = 'hidden';
-                seal.style.opacity = '0'; // Completamente invisível quando não está em hover
+                seal.style.opacity = '0';
                 seal.style.pointerEvents = 'none';
-                seal.style.color = 'rgba(77, 208, 225, 0.25)';
-                seal.style.border = '2.5px solid rgba(77, 208, 225, 0.25)';
+                seal.style.color = 'var(--neon-cyan)';
+                seal.style.border = '2px solid var(--neon-cyan)';
                 seal.style.boxShadow = 'none';
-                seal.querySelector('span').style.textShadow = 'none';
             }
         });
         seal.addEventListener('click', e => {
@@ -182,24 +177,22 @@ function addBugSealToItems(selector) {
             const equipado = checkbox && checkbox.checked;
             // Atualiza visual do selo
             if (item.classList.contains('bugado')) {
-                seal.style.background = 'radial-gradient(circle at 60% 40%, #ff1744 70%, #0f1419 100%)';
-                seal.style.color = '#fff';
-                seal.style.border = '2.5px solid #ff1744';
-                seal.style.boxShadow = '0 0 4px 1px #ff1744';
+                seal.style.background = 'var(--bg-card)';
+                seal.style.color = 'var(--neon-pink)';
+                seal.style.border = '2px solid var(--neon-pink)';
+                seal.style.boxShadow = '0 0 15px var(--neon-pink-glow)';
                 seal.style.opacity = '1';
                 seal.style.visibility = 'visible';
                 seal.style.pointerEvents = 'auto';
-                seal.querySelector('span').style.textShadow = '0 0 8px #ff1744, 0 0 2px #fff';
                 applyGlitchEffect(item);
             } else {
-                seal.style.background = 'radial-gradient(circle at 60% 40%, #4dd0e1 60%, #0f1419 100%)';
-                seal.style.color = 'rgba(77, 208, 225, 0.5)';
-                seal.style.border = '2.5px solid rgba(77, 208, 225, 0.5)';
+                seal.style.background = 'var(--bg-card)';
+                seal.style.color = 'var(--neon-cyan)';
+                seal.style.border = '2px solid var(--neon-cyan)';
                 seal.style.boxShadow = 'none';
-                seal.style.opacity = '0'; // Invisível quando não bugado
+                seal.style.opacity = '0';
                 seal.style.visibility = 'hidden';
                 seal.style.pointerEvents = 'none';
-                seal.querySelector('span').style.textShadow = 'none';
                 removeGlitchEffect(item);
             }
         });
