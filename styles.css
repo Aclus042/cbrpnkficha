@@ -2488,3 +2488,106 @@ body::after {
 }
 
 /* ===== FIM DO LAYOUT DA SEÇÃO IDENTIDADE ===== */
+
+/* ===== EFEITO SCANLINES CRT RETRO ===== */
+/* Overlay de scanlines para simular monitores CRT antigos */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 9999;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent 0px,
+        transparent 2px,
+        rgba(0, 0, 0, 0.15) 2px,
+        rgba(0, 0, 0, 0.15) 3px,
+        transparent 3px,
+        transparent 5px,
+        rgba(77, 208, 225, 0.02) 5px,
+        rgba(77, 208, 225, 0.02) 6px
+    );
+    opacity: 0.6;
+    mix-blend-mode: overlay;
+}
+
+/* Efeito de interferência sutil */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 9998;
+    background: 
+        repeating-linear-gradient(
+            90deg,
+            transparent 0px,
+            transparent 100px,
+            rgba(255, 255, 255, 0.01) 100px,
+            rgba(255, 255, 255, 0.01) 101px
+        ),
+        repeating-linear-gradient(
+            45deg,
+            transparent 0px,
+            transparent 2px,
+            rgba(77, 208, 225, 0.005) 2px,
+            rgba(77, 208, 225, 0.005) 3px
+        );
+    opacity: 0.8;
+    mix-blend-mode: soft-light;
+}
+
+/* Efeito adicional nos elementos principais para reforçar o visual retro */
+.container {
+    position: relative;
+}
+
+.container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 1;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent 0px,
+        transparent 4px,
+        rgba(77, 208, 225, 0.008) 4px,
+        rgba(77, 208, 225, 0.008) 5px
+    );
+    mix-blend-mode: overlay;
+}
+
+/* Garantir que conteúdo fique acima dos overlays */
+.tab-content,
+.navbar,
+.damage-indicators {
+    position: relative;
+    z-index: 2;
+}
+
+/* Reduzir intensidade em dispositivos móveis */
+@media (max-width: 768px) {
+    body::before {
+        opacity: 0.4;
+    }
+    
+    body::after {
+        opacity: 0.6;
+    }
+    
+    .container::before {
+        opacity: 0.5;
+    }
+}
+/* ===== FIM DO EFEITO SCANLINES CRT ===== */
