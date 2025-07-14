@@ -7,14 +7,14 @@ if (!document.getElementById('glitch-keyframes')) {
     @keyframes glitch {
         0% { transform: none; }
         10% { transform: skewX(-2deg) scaleY(1.01); }
-        20% { transform: translate(-2px, 1px) skewX(2deg); }
-        30% { transform: translate(2px, -1px) skewX(-1deg); }
+        20% { transform: skewX(2deg); }
+        30% { transform: skewX(-1deg); }
         40% { transform: skewX(1deg) scaleY(0.99); }
         50% { transform: none; }
-        60% { transform: translate(1px, 2px) skewX(1deg); }
-        70% { transform: translate(-1px, -2px) skewX(-2deg); }
+        60% { transform: skewX(1deg); }
+        70% { transform: skewX(-2deg); }
         80% { transform: skewX(2deg) scaleY(1.01); }
-        90% { transform: translate(2px, 1px) skewX(-1deg); }
+        90% { transform: skewX(-1deg); }
         100% { transform: none; }
     }
     `;
@@ -355,6 +355,9 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeEquipmentCategories();
     initializeSaveLoad();
     initializeImageUpload();
+    
+    // Inicializar status de carga
+    updateCargaStatus();
 
     console.log('Componentes inicializados!');
 
@@ -411,12 +414,13 @@ function initializeFormHandlers() {
     document.addEventListener('change', function(event) {
         if (event.target.matches('input[name="carga"]')) {
             character.carga = parseInt(event.target.value);
-            debouncedUpdateCargaStatus();
+            updateCargaStatus();
         }
         
         // Equipamentos
         if (event.target.matches('input[type="checkbox"][name^="equip-"]')) {
             handleEquipmentChange(event);
+            updateCargaStatus();
         }
         
         // Estresse
@@ -676,6 +680,68 @@ function updateCategoriaCounter(categoria) {
     }
 }
 
+// Função para atualizar contadores das categorias de equipamentos
+function updateCategoryCounters() {
+    // Mapear categorias para seus limites máximos
+    const categoryLimits = {
+        'armas': 6,
+        'protecoes': 2,
+        'maquinas': 4,
+        'ferramentas': 4,
+        'kits': 4,
+        'carga': 4
+    };
+    
+    // Atualizar contador de cada categoria
+    Object.keys(categoryLimits).forEach(categoria => {
+        const checkboxes = document.querySelectorAll(`input[data-categoria="${categoria}"]`);
+        const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+        const maxCount = categoryLimits[categoria];
+        
+        // Encontrar o contador da categoria baseado no texto do cabeçalho
+        const categoriaHeaders = document.querySelectorAll('.categoria-header h4');
+        categoriaHeaders.forEach(header => {
+            const headerText = header.textContent.toLowerCase();
+            let matches = false;
+            
+            switch(categoria) {
+                case 'armas':
+                    matches = headerText.includes('armas');
+                    break;
+                case 'protecoes':
+                    matches = headerText.includes('proteções');
+                    break;
+                case 'maquinas':
+                    matches = headerText.includes('máquinas');
+                    break;
+                case 'ferramentas':
+                    matches = headerText.includes('ferramentas');
+                    break;
+                case 'kits':
+                    matches = headerText.includes('kits');
+                    break;
+                case 'carga':
+                    matches = headerText.includes('carga adicional');
+                    break;
+            }
+            
+            if (matches) {
+                const counter = header.querySelector('.categoria-counter');
+                if (counter) {
+                    counter.textContent = `(${checkedCount}/${maxCount})`;
+                    
+                    // Aplicar cor vermelha se exceder o limite
+                    if (checkedCount > maxCount) {
+                        counter.style.color = 'var(--neon-red)';
+                    } else {
+                        counter.style.color = '';
+                    }
+                }
+            }
+        });
+    });
+}
+
 // Flag para evitar múltiplas inicializações
 let equipmentCategoriesInitialized = false;
 
@@ -712,27 +778,44 @@ function initializeEquipmentCategories() {
 function updateCargaStatus() {
     let totalWeight = 0;
     
-    // Usar cache de checkboxes para melhor performance
-    if (domCache.equipmentCheckboxes) {
-        domCache.equipmentCheckboxes.forEach(checkbox => {
-            if (checkbox.checked) {
-                const weight = parseInt(checkbox.dataset.weight) || 1;
-                totalWeight += weight;
-            }
-        });
-    }
+    // Calcular peso total dos equipamentos selecionados
+    document.querySelectorAll('.equipment-item input[type="checkbox"]:checked').forEach(checkbox => {
+        const weight = parseInt(checkbox.dataset.weight) || 1;
+        totalWeight += weight;
+    });
     
     const maxCarga = character.carga;
-    const status = domCache.cargaStatus;
-    if (!status) return; // Proteção se elemento não existir
+    const isOverweight = totalWeight > maxCarga;
     
-    if (totalWeight <= maxCarga) {
-        status.textContent = `${totalWeight}/${maxCarga} pontos de carga`;
-        status.className = 'status-message valid';
-    } else {
-        status.textContent = `Sobrecarga! ${totalWeight}/${maxCarga} pontos de carga`;
-        status.className = 'status-message invalid';
+    // Primeiro, limpar efeito glitch de todas as cargas
+    document.querySelectorAll('input[name="carga"]').forEach(cargaInput => {
+        const label = cargaInput.closest('label');
+        if (label) {
+            label.style.color = '';
+            label.style.borderColor = '';
+            label.style.boxShadow = '';
+            label.style.removeProperty('filter');
+            label.style.removeProperty('animation');
+        }
+    });
+    
+    // Encontrar o botão de carga selecionado
+    const selectedCargaButton = document.querySelector('input[name="carga"]:checked');
+    const cargaLabel = selectedCargaButton ? selectedCargaButton.closest('label') : null;
+    
+    // Aplicar efeito glitch apenas na carga ativa se houver sobrecarga
+    if (cargaLabel && isOverweight) {
+        // Aplicar efeito glitch e cor vermelha
+        cargaLabel.style.color = 'var(--neon-red)';
+        cargaLabel.style.borderColor = 'var(--neon-red)';
+        cargaLabel.style.boxShadow = '0 0 15px var(--neon-red-glow)';
+        cargaLabel.style.position = 'relative';
+        cargaLabel.style.setProperty('filter', 'contrast(1.2) brightness(1.1)', 'important');
+        cargaLabel.style.setProperty('animation', 'glitch 0.7s infinite linear', 'important');
     }
+    
+    // Atualizar contadores das categorias
+    updateCategoryCounters();
 }
 
 // Estresse otimizado

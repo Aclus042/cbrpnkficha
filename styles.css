@@ -1008,7 +1008,7 @@ body {
 
 .equipment-item:hover {
     border-color: var(--neon-green);
-    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
+    box-shadow: none !important;
     transform: translateY(-2px) scale(1.02);
 }
 
@@ -1118,7 +1118,7 @@ body {
 .carga-options-vertical label:hover {
     border-color: var(--neon-green);
     color: var(--neon-green);
-    box-shadow: 0 0 10px rgba(77, 208, 225, 0.3);
+    box-shadow: none !important;
     transform: translateY(-2px) scale(1.02);
 }
 
@@ -1182,6 +1182,11 @@ body {
     border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     height: 100%;
+}
+
+/* Garantir que não há sombra no hover das ampliações */
+.ampliacao-item-eq:hover {
+    box-shadow: none !important;
 }
 
 .ampliacoes-container-equipamentos .form-group {
@@ -2591,3 +2596,9 @@ body::after {
     }
 }
 /* ===== FIM DO EFEITO SCANLINES CRT ===== */
+
+/* Sobrescrever estilos de hover que podem causar sombras indesejadas */
+.equipment-item:hover,
+.ampliacao-item-eq:hover {
+    box-shadow: none !important;
+}
